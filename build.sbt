@@ -35,7 +35,10 @@ lazy val dependencySettings = Seq(
       "com.typesafe.slick" %% "slick-hikaricp" % slickV,
       "com.typesafe.akka" %% "akka-http-core" % akkaV,
       "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaV,
-      "com.typesafe.akka" %% "akka-http-testkit" % akkaV % "test"
+      "com.typesafe.akka" %% "akka-http-testkit" % akkaV % "test",
+      "io.monix" %% "monix" % "2.0.0",
+      "org.typelevel" %% "cats" % "0.7.2",
+      "com.h2database" % "h2" % "1.4.192"
     )
   }
 )

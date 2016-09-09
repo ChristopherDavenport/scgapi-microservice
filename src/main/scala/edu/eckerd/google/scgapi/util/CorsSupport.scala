@@ -37,3 +37,4 @@ trait CorsSupport {
     preflightRequestHandler ~ r
   }
 
+}

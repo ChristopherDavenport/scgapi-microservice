@@ -1,10 +1,10 @@
 package edu.eckerd.google.scgapi.persistence
 
-import edu.eckerd.google.scgapi.persistence.api.DatabaseService
 import edu.eckerd.google.scgapi.models.CompleteGroup
 import edu.eckerd.google.scgapi.models.OptionGroup
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
+
 import scala.concurrent.Future
 
 /**

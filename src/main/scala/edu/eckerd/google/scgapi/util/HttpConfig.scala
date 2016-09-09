@@ -10,6 +10,8 @@ trait HttpConfig {
   private val httpConfig = config.getConfig("http")
   val httpHost = httpConfig.getString("interface")
   val httpPort = httpConfig.getInt("port")
-  val httpToken = httpConfig.getString("token")
+  val httpAccessPassword = httpConfig.getString("password")
+
+//  val httpsKeystorePassword: Array[Char] = ???
 
 }

@@ -72,7 +72,6 @@ case class OptionGroup(
 case class GroupBuilder(
                          email: String,
                          name: Option[String],
-                         desc: Option[String],
-                         adminCreated: Option[Boolean] = Some(true)
+                         desc: Option[String]
                        ) extends Group
 

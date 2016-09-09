@@ -1,7 +1,7 @@
-package edu.eckerd.google.scgapi.persistence.api
+package edu.eckerd.google.scgapi.persistence
 
-import edu.eckerd.google.scgapi.models.CompleteGroup
-import edu.eckerd.google.scgapi.models.OptionGroup
+import edu.eckerd.google.scgapi.models.{CompleteGroup, OptionGroup}
+
 import scala.concurrent.Future
 /**
   * Created by davenpcm on 9/8/16.
