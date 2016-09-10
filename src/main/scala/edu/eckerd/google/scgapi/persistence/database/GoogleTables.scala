@@ -1,6 +1,7 @@
-package edu.eckerd.google.scgapi.persistence
+package edu.eckerd.google.scgapi.persistence.database
 
 import java.sql.Timestamp
+
 import edu.eckerd.google.api.services.directory.models.{Email, Name, User}
 
 

@@ -1,4 +1,4 @@
-package edu.eckerd.google.scgapi.util
+package edu.eckerd.google.scgapi.http.util
 
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.HttpResponse

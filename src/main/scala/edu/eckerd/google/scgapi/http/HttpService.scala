@@ -4,7 +4,7 @@ import akka.http.scaladsl.server.Directives._
 import edu.eckerd.google.scgapi.http.routes.{GroupsServiceRoutes, TestServiceRoutes}
 import edu.eckerd.google.scgapi.services.auth.AuthService
 import edu.eckerd.google.scgapi.services.core.groups.GroupsService
-import edu.eckerd.google.scgapi.util.{CorsSupport, HttpConfig}
+import edu.eckerd.google.scgapi.http.util.{CorsSupport, HttpConfig}
 
 
 import scala.concurrent.ExecutionContext
@@ -14,15 +14,19 @@ import scala.concurrent.ExecutionContext
 class HttpService(groupsService: GroupsService, authService: AuthService)(implicit executionContext: ExecutionContext) extends CorsSupport {
 
   val testRouter = new TestServiceRoutes(authService)
-  val groupRouter = new GroupsServiceRoutes(groupsService)
+  val groupRouter = new GroupsServiceRoutes(groupsService, authService)
 
   val routes = corsHandler{
-    authenticateBasicAsync(realm = "*", authService.authenticate) { userName =>
-      groupRouter.route
-    } ~
-    testRouter.route
+      groupRouter.route ~ testRouter.route
   }
 
 
 
+
 }
+
+object HttpService {
+  def apply(groupsService: GroupsService, authService: AuthService)(implicit executionContext: ExecutionContext): HttpService =
+    new HttpService(groupsService, authService)(executionContext)
+}
+

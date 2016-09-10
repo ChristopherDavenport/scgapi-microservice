@@ -1,4 +1,4 @@
-package edu.eckerd.google.scgapi.persistence
+package edu.eckerd.google.scgapi.persistence.database
 
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile

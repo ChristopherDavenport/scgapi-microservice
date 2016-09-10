@@ -1,7 +1,6 @@
-package edu.eckerd.google.scgapi.persistence
+package edu.eckerd.google.scgapi.persistence.database
 
-import edu.eckerd.google.scgapi.models.CompleteGroup
-import edu.eckerd.google.scgapi.models.OptionGroup
+import edu.eckerd.google.scgapi.models.{CompleteGroup, MatchedGroup}
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 
@@ -14,6 +13,6 @@ class DatabaseServiceImpl extends DatabaseService with HasDB {
   val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig("database")
 
   def groupExists(email: String): Future[Boolean] = ???
-  def groupUpdate(optionGroup: OptionGroup): Future[Int] = ???
+  def groupUpdate(matchedGroup: MatchedGroup): Future[Int] = ???
   def groupInsert(completeGroup: CompleteGroup): Future[Int] = ???
 }

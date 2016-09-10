@@ -1,6 +1,6 @@
-package edu.eckerd.google.scgapi.persistence
+package edu.eckerd.google.scgapi.persistence.database
 
-import edu.eckerd.google.scgapi.models.{CompleteGroup, OptionGroup}
+import edu.eckerd.google.scgapi.models.{CompleteGroup, MatchedGroup}
 
 import scala.concurrent.Future
 /**
@@ -8,7 +8,7 @@ import scala.concurrent.Future
   */
 trait DatabaseService {
   def groupExists(email: String): Future[Boolean]
-  def groupUpdate(optionGroup: OptionGroup): Future[Int]
+  def groupUpdate(optionGroup: MatchedGroup): Future[Int]
   def groupInsert(completeGroup: CompleteGroup): Future[Int]
 
 }
