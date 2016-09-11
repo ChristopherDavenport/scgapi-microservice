@@ -1,6 +1,8 @@
 package edu.eckerd.google.scgapi.persistence.google
 
-import edu.eckerd.google.scgapi.models.{Group, GroupBuilder}
+import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
+import edu.eckerd.google.scgapi.models.{CompleteGroup, Group, GroupBuilder, MatchedGroup}
+import edu.eckerd.google.scgapi.persistence.google.conversions.GroupConversions
 
 /**
   * Created by davenpcm on 9/10/16.

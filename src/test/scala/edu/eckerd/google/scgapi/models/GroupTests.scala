@@ -26,7 +26,7 @@ class GroupTests extends FlatSpec with Matchers {
       MatchedGroup("email", "name", idOpt, countOpt, Some("desc"), adminCreatedOpt)
     }
     val mg1 = matchedGroupCreator(Some("id"), Some(4L), Some(true))
-    Group(mg1.email, mg1.name, mg1.id, mg1.count, mg1.desc, mg1.adminCreated) shouldEqual mg1
+    Group(mg1.email, mg1.name, mg1.id, mg1.count, mg1.desc, mg1.adminCreated) should not be mg1
 
     val mg2 = matchedGroupCreator(None, Some(4L), Some(true))
     Group(mg2.email, mg2.name, mg2.id, mg2.count, mg2.desc, mg2.adminCreated) shouldEqual mg2
@@ -48,6 +48,11 @@ class GroupTests extends FlatSpec with Matchers {
 
     val mg4 = matchedGroupCreator(None, None, None)
     Group(mg4.email, mg4.name, mg4.id, mg4.count, mg4.desc, mg4.adminCreated) should not be mg4
+  }
+
+  it should "create a CompleteGroup if all optional values are present in the option constructor pattern" in {
+    val cg = CompleteGroup("email", "name", "id", 1L, Some("desc"), true)
+    Group("email", "name", Some("id"), Some(1L), Some("desc"), Some(true)) shouldEqual cg
   }
 
   it should "create a GroupBuilder if non of the optional values are present in the option constructor pattern" in {

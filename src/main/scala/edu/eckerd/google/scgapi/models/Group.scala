@@ -41,14 +41,23 @@ object Group{
              email:String,
              name: String,
              id: Option[String],
-            count: Option[Long],
-            desc: Option[String],
-            adminCreated: Option[Boolean]
-           ): Group = if ( id.isDefined || count.isDefined || adminCreated.isDefined ){
-    MatchedGroup( email, name, id, count, desc, adminCreated)
-  } else {
-    GroupBuilder(email, name, desc)
+             count: Option[Long],
+             desc: Option[String],
+             adminCreated: Option[Boolean]
+           ): Group = {
+    for{
+      pid <- id
+      pcount <- count
+      padminCreated <- adminCreated
+    } yield CompleteGroup(email, name, pid, pcount, desc, padminCreated)
   }
+    .getOrElse {
+      if (id.isDefined || count.isDefined || adminCreated.isDefined) {
+        MatchedGroup(email, name, id, count, desc, adminCreated)
+      } else {
+        GroupBuilder(email, name, desc)
+      }
+    }
 
 
 }

@@ -12,7 +12,7 @@ trait GoogleTables {
   val profile : slick.driver.JdbcProfile
   import profile.api._
 
-  lazy val schema = googleUsers.schema ++ googleGroups.schema ++ googleGroupToUser.schema
+  lazy val schema = googleUsers.schema ++ googleGroups.schema ++ googleMembers.schema
 
   class GOOGLE_USERS(tag: Tag)  extends Table[User](tag, "GOOGLE_USERS") {
     def googleID = column[String]("GOOGLE_ID", O.PrimaryKey)
@@ -132,7 +132,7 @@ trait GoogleTables {
 
   lazy val googleGroups = new TableQuery(tag => new GOOGLE_GROUPS(tag))
 
-  case class GoogleGroupToUserRow(
+  case class GoogleMembersRow(
                                    groupId: String,
                                    userID: String,
                                    userEmail: Option[String],
@@ -142,7 +142,7 @@ trait GoogleTables {
                                    processIndicator: Option[String] = None
                                  )
 
-  class GOOGLE_MEMBERS(tag: Tag) extends Table[GoogleGroupToUserRow](tag, "GOOGLE_MEMBERS") {
+  class GOOGLE_MEMBERS(tag: Tag) extends Table[GoogleMembersRow](tag, "GOOGLE_MEMBERS") {
     def groupId = column[String]("GROUP_ID")
     def userID = column[String]("USER_ID")
     def userEmail = column[Option[String]]("USER_EMAIL")
@@ -157,45 +157,45 @@ trait GoogleTables {
     )
 
     def * = (groupId, userID, userEmail, autoIndicator, memberRole, memberType, processIndicator) <>
-      (GoogleGroupToUserRow.tupled, GoogleGroupToUserRow.unapply )
+      (GoogleMembersRow.tupled, GoogleMembersRow.unapply )
   }
 
-  lazy val googleGroupToUser = new TableQuery(tag => new GOOGLE_MEMBERS(tag))
+  lazy val googleMembers = new TableQuery(tag => new GOOGLE_MEMBERS(tag))
 
 
-  case class GwbaliasRow(
-                          typePkCk: String,
-                          keyPk: String,
-                          alias: String,
-                          termCode: String,
-                          createGroupCk: String,
-                          createDate: Timestamp,
-                          activityDate: Timestamp,
-                          userId: String
-                        )
+//  case class GwbaliasRow(
+//                          typePkCk: String,
+//                          keyPk: String,
+//                          alias: String,
+//                          termCode: String,
+//                          createGroupCk: String,
+//                          createDate: Timestamp,
+//                          activityDate: Timestamp,
+//                          userId: String
+//                        )
 
-  class GWBALIAS(tag: Tag) extends Table[GwbaliasRow](tag, "GWBALIAS") {
-    def typePkCk = column[String]("GWBALIAS_TYPE_PK_CK")
-    def keyPk = column[String]("GWBALIAS_KEY_PK")
-    def alias = column[String]("GWBALIAS_ALIAS")
-    def termCode = column[String]("GWBALIAS_TERM_CODE")
-    def createGroupCk = column[String]("GWBALIAS_CREATE_GROUP_CK")
-    def createDate =  column[Timestamp]("GWBALIAS_DATE_CREATED")
-    def activityDate = column[Timestamp]("GWBALIAS_ACTIVITY_DATE")
-    def userId= column[String]("GWBALIAS_USER_ID")
-
-    def * = (
-      typePkCk,
-      keyPk,
-      alias,
-      termCode,
-      createGroupCk,
-      createDate,
-      activityDate,
-      userId) <> (GwbaliasRow.tupled, GwbaliasRow.unapply)
-
-    def pk = primaryKey( "gwbalias_pk", (typePkCk, keyPk) )
-  }
-
-  lazy val gwbAlias = new TableQuery(tag => new GWBALIAS(tag))
+//  class GWBALIAS(tag: Tag) extends Table[GwbaliasRow](tag, "GWBALIAS") {
+//    def typePkCk = column[String]("GWBALIAS_TYPE_PK_CK")
+//    def keyPk = column[String]("GWBALIAS_KEY_PK")
+//    def alias = column[String]("GWBALIAS_ALIAS")
+//    def termCode = column[String]("GWBALIAS_TERM_CODE")
+//    def createGroupCk = column[String]("GWBALIAS_CREATE_GROUP_CK")
+//    def createDate =  column[Timestamp]("GWBALIAS_DATE_CREATED")
+//    def activityDate = column[Timestamp]("GWBALIAS_ACTIVITY_DATE")
+//    def userId= column[String]("GWBALIAS_USER_ID")
+//
+//    def * = (
+//      typePkCk,
+//      keyPk,
+//      alias,
+//      termCode,
+//      createGroupCk,
+//      createDate,
+//      activityDate,
+//      userId) <> (GwbaliasRow.tupled, GwbaliasRow.unapply)
+//
+//    def pk = primaryKey( "gwbalias_pk", (typePkCk, keyPk) )
+//  }
+//
+//  lazy val gwbAlias = new TableQuery(tag => new GWBALIAS(tag))
 }
