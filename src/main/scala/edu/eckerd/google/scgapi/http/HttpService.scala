@@ -1,32 +1,8 @@
 package edu.eckerd.google.scgapi.http
-
-import akka.http.scaladsl.server.Directives._
-import edu.eckerd.google.scgapi.http.routes.{GroupsServiceRoutes, TestServiceRoutes}
-import edu.eckerd.google.scgapi.services.auth.AuthService
-import edu.eckerd.google.scgapi.services.core.groups.GroupsService
-import edu.eckerd.google.scgapi.http.util.{CorsSupport, HttpConfig}
-
-
-import scala.concurrent.ExecutionContext
+import akka.http.scaladsl.server.Route
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by davenpcm on 9/11/16.
   */
-class HttpService(groupsService: GroupsService, authService: AuthService)(implicit executionContext: ExecutionContext) extends CorsSupport {
-
-  val testRouter = new TestServiceRoutes(authService)
-  val groupRouter = new GroupsServiceRoutes(groupsService, authService)
-
-  val routes = corsHandler{
-      groupRouter.route ~ testRouter.route
-  }
-
-
-
-
+trait HttpService {
+ val routes : Route
 }
-
-object HttpService {
-  def apply(groupsService: GroupsService, authService: AuthService)(implicit executionContext: ExecutionContext): HttpService =
-    new HttpService(groupsService, authService)(executionContext)
-}
-

@@ -17,7 +17,7 @@ trait CorsSupport {
       `Access-Control-Allow-Origin`(HttpOrigin(sAllowedOrigin))
   }
 
-  private def addAccessControlHeaders: Directive0 = {
+  private def addAccessControlHeaders(): Directive0 = {
     mapResponseHeaders { headers =>
       allowedOriginHeader +:
         `Access-Control-Allow-Credentials`(true) +:
@@ -33,7 +33,7 @@ trait CorsSupport {
     )
   }
 
-  def corsHandler(r: Route) = addAccessControlHeaders {
+  def corsHandler(r: Route) = addAccessControlHeaders() {
     preflightRequestHandler ~ r
   }
 

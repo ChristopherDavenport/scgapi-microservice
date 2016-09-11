@@ -1,13 +1,14 @@
 package edu.eckerd.google.scgapi.http.routes
 
 import scala.concurrent.ExecutionContext
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import edu.eckerd.google.scgapi.models._
 import edu.eckerd.google.scgapi.services.auth.AuthService
 import edu.eckerd.google.scgapi.services.core.groups.GroupsService
 import edu.eckerd.google.scgapi.http.util.{HttpConfig, JsonProtocol}
+
 import scala.concurrent.Future
 /**
   * Created by davenpcm on 9/9/16.
@@ -17,51 +18,35 @@ class GroupsServiceRoutes(groupsService: GroupsService, authService: AuthService
   extends JsonProtocol {
   import StatusCodes._
 
-  val route = pathPrefix("groups") {
+  val route = pathPrefix("groups") { authenticateBasic(realm = "*", authService.authenticate) { userName =>
     pathEndOrSingleSlash {
       get {
-        authenticateBasic(realm = "*", authService.authenticate) { userName =>
-          complete(Message(s"$userName Please Ask For a Get Request Against A Single Group"))
-        }
+        complete(Message(s"$userName Please Ask For a Get Request Against A Single Group"))
       } ~
         post {
-          authenticateBasic(realm = "*", authService.authenticate) { userName =>
-            entity(as[GroupBuilder]) { groupBuilder =>
-              println(s"$userName posted $groupBuilder to groups")
-              complete(groupBuilder)
-            }
+          entity(as[GroupBuilder]) { groupBuilder =>
+            complete(StatusCodes.Created, groupsService.createGroup(groupBuilder))
           }
         } ~
-      put {
-        authenticateBasic(realm = "*", authService.authenticate) { userName =>
-          val msg = s"$userName called groups Put - Not Implemented"
-          println(msg)
-          complete(Message(msg))
-
-        }
-      } ~
+//        put {
+//          entity(as[GroupBuilder]) { groupBuilder =>
+//            complete(groupBuilder)
+//          }
+//        } ~
         delete {
-          authenticateBasic(realm = "*", authService.authenticate) { userName =>
-            entity(as[GroupBuilder]) { groupBuilder =>
-              println(s"$userName called groups Delete - $groupBuilder")
-              complete(groupBuilder)
-            }
+          entity(as[GroupBuilder]) { groupBuilder =>
+            complete(groupsService.deleteGroup(groupBuilder).map(_ => HttpResponse(StatusCodes.NoContent)))
           }
         }
-
-
     } ~
-    pathPrefix( Segment ){ emailPrefix =>
-      pathEndOrSingleSlash{
-        get{
-          authenticateBasic(realm = "*", authService.authenticate) { userName =>
-            println(s"$userName called groups GET for group - $emailPrefix@eckerd.edu")
-              complete(groupsService.getGroupByEmail(emailPrefix + "@eckerd.edu"))
+      pathPrefix(Segment) { emailPrefix =>
+        pathEndOrSingleSlash {
+          get {
+            rejectEmptyResponse(complete(groupsService.getGroupByEmail(emailPrefix + "@eckerd.edu")))
           }
         }
       }
-    }
-
+  }
   }
 
 }

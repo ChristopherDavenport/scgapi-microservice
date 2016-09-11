@@ -7,21 +7,51 @@ import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
   */
 sealed trait Group{
   val email: String
+  val name: String
+  val desc: Option[String]
+
+  def asGroupBuilder: GroupBuilder = GroupBuilder(
+    email,
+    name,
+    desc
+  )
+
+  def asMatchedGroup: MatchedGroup
+
 }
 
-//object Group {
-//
-//  implicit def completeGroupToMatchedGroup(completeGroup: CompleteGroup): MatchedGroup =
-//    MatchedGroup(
-//      completeGroup.email,
-//      completeGroup.name,
-//      Some(completeGroup.id),
-//      Some(completeGroup.count),
-//      completeGroup.desc,
-//      Some(completeGroup.adminCreated)
-//    )
-//
-//}
+object Group{
+  def apply(
+             email: String,
+             name: String,
+             desc: Option[String]
+           ): GroupBuilder = GroupBuilder(email, name,desc)
+
+  def apply(
+             email: String,
+             name: String,
+             id: String,
+             count: Long,
+             desc: Option[String],
+             adminCreated: Boolean
+           ): CompleteGroup =
+    CompleteGroup(email, name, id, count, desc, adminCreated)
+
+  def apply(
+             email:String,
+             name: String,
+             id: Option[String],
+            count: Option[Long],
+            desc: Option[String],
+            adminCreated: Option[Boolean]
+           ): Group = if ( id.isDefined || count.isDefined || adminCreated.isDefined ){
+    MatchedGroup( email, name, id, count, desc, adminCreated)
+  } else {
+    GroupBuilder(email, name, desc)
+  }
+
+
+}
 
 case class CompleteGroup(
                           email: String,
@@ -30,7 +60,18 @@ case class CompleteGroup(
                           count: Long,
                           desc: Option[String],
                           adminCreated: Boolean
-                        ) extends Group
+                        ) extends Group {
+
+  def asMatchedGroup: MatchedGroup = MatchedGroup(
+    email,
+    name,
+    Some(id),
+    Some(count),
+    desc,
+    Some(adminCreated)
+  )
+
+}
 
 case class MatchedGroup(
                          email: String,
@@ -39,11 +80,15 @@ case class MatchedGroup(
                          count: Option[Long],
                          desc: Option[String],
                          adminCreated: Option[Boolean]
-                       ) extends Group
+                       ) extends Group{
+  def asMatchedGroup: MatchedGroup = this
+}
 
 case class GroupBuilder(
                          email: String,
                          name: String,
                          desc: Option[String]
-                       ) extends Group
+                       ) extends Group {
+  def asMatchedGroup: MatchedGroup = MatchedGroup(email, name, None, None, desc, None)
+}
 

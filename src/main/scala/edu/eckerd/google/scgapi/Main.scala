@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.event.{Logging, LoggingAdapter}
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl.Http
-import edu.eckerd.google.scgapi.http.HttpService
+import edu.eckerd.google.scgapi.http.{HttpService, HttpServiceImpl}
 import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
 import edu.eckerd.google.scgapi.services.core.groups.{GroupsServiceBasicImpl, GroupsServiceImpl}
 import edu.eckerd.google.scgapi.http.util.HttpConfig
@@ -29,8 +29,7 @@ object Main extends App with HttpConfig {
   val directoryService: DirectoryService = DirectoryServiceImpl()
   val groupsService = GroupsServiceBasicImpl(directoryService)
   val authService = AuthServiceImpl(httpAccessPassword)
-  val httpService = HttpService(groupsService, authService)
-
+  val httpService = HttpServiceImpl(groupsService, authService)
 
 
   val bindingFuture = Http().bindAndHandle(httpService.routes, httpHost, httpPort)

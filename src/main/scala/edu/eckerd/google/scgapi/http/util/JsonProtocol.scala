@@ -17,6 +17,13 @@ trait JsonProtocol extends AkkaSprayJsonSupport with SprayDefaultJsonProtocol {
   implicit val MatchedGroupJsonProtocol   = jsonFormat6(MatchedGroup)
 
   implicit object GroupJsonProtocol extends RootJsonFormat[Group] {
+    /**
+      * Group Parser Can Return Either a Matched Group or a Complete Group as these are the types that closely
+      * integrate with google. The Group Builder will not be parsed or written when writing as a group as it is
+      * an explicit call for less information.
+      * @param g The Group To Write
+      * @return A Json Parsed Group either as a CompleteGroup or a MatchedGroup
+      */
     def write(g: Group) = g match {
       case groupBuilder: GroupBuilder   => GroupBuilderJsonProtocol.write(groupBuilder)
       case matchedGroup: MatchedGroup   => MatchedGroupJsonProtocol.write(matchedGroup)
@@ -26,7 +33,11 @@ trait JsonProtocol extends AkkaSprayJsonSupport with SprayDefaultJsonProtocol {
     def read(value: JsValue) = value match {
       case completeGroup if Try(CompleteGroupJsonProtocol.read(value)).isSuccess =>
         CompleteGroupJsonProtocol.read(value)
-      case matchedGroup if Try(MatchedGroupJsonProtocol.read(value)).isSuccess =>
+      case matchedGroup if Try(MatchedGroupJsonProtocol.read(value)).isSuccess &&
+        ( MatchedGroupJsonProtocol.read(value).adminCreated.isDefined ||
+          MatchedGroupJsonProtocol.read(value).count.isDefined ||
+          MatchedGroupJsonProtocol.read(value).id.isDefined
+          ) =>
         MatchedGroupJsonProtocol.read(value)
       case groupBuilder if Try(GroupBuilderJsonProtocol.read(value)).isSuccess =>
         GroupBuilderJsonProtocol.read(value)
