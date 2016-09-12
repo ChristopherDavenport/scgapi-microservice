@@ -62,7 +62,7 @@ object Group{
 
 }
 
-case class CompleteGroup(
+final case class CompleteGroup(
                           email: String,
                           name: String,
                           id: String,
@@ -82,7 +82,7 @@ case class CompleteGroup(
 
 }
 
-case class MatchedGroup(
+final case class MatchedGroup(
                          email: String,
                          name: String,
                          id: Option[String],
@@ -93,11 +93,12 @@ case class MatchedGroup(
   def asMatchedGroup: MatchedGroup = this
 }
 
-case class GroupBuilder(
+final case class GroupBuilder(
                          email: String,
                          name: String,
                          desc: Option[String]
                        ) extends Group {
+  def emailValidate = if (!email.contains('@')) GroupBuilder(email + "@eckerd.edu", name, desc) else this
   def asMatchedGroup: MatchedGroup = MatchedGroup(email, name, None, None, desc, None)
 }
 

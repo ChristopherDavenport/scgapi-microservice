@@ -37,11 +37,12 @@ lazy val dependencySettings = Seq(
       "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaV,
       "com.typesafe.akka" %% "akka-http-testkit" % akkaV % "test",
       "org.scalatest" %% "scalatest" % "3.0.0",
-      "com.h2database" % "h2" % "1.4.192"
-//      "io.monix" %% "monix" % "2.0.0",
+      "com.h2database" % "h2" % "1.4.192",
+      "ch.qos.logback" %  "logback-classic" % "1.1.7",
+      "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0",
+//      "io.monix" %% "monix" % "2.0.0"
 //      "io.monix" %% "monix-cats" % "2.0.0"
-//      "org.typelevel" %% "cats" % "0.7.2",
-//      "com.h2database" % "h2" % "1.4.192"
+      "org.typelevel" %% "cats" % "0.7.2"
     )
   }
 )

@@ -4,9 +4,9 @@ import akka.actor.ActorSystem
 import akka.event.{Logging, LoggingAdapter}
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl.Http
-import edu.eckerd.google.scgapi.http.{HttpService, HttpServiceImpl}
+import edu.eckerd.google.scgapi.http.HttpServiceImpl
 import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
-import edu.eckerd.google.scgapi.services.core.groups.{GroupsServiceBasicImpl, GroupsServiceImpl}
+import edu.eckerd.google.scgapi.services.core.groups.GroupsServiceBasicImpl
 import edu.eckerd.google.scgapi.http.util.HttpConfig
 import edu.eckerd.google.scgapi.persistence.google.DirectoryService
 import edu.eckerd.google.scgapi.persistence.google.DirectoryServiceImpl

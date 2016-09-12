@@ -67,10 +67,10 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
       case _ => Future.successful(())
     }
 
-    override def createGroup(groupBuilder: GroupBuilder): Future[Group] = groupBuilder.email match {
+    override def createGroup(groupBuilder: GroupBuilder): Future[Option[Group]] = groupBuilder.email match {
       case fail if fail == nonGroupEmail => Future.failed(myTestError)
-      case complete if complete == completeGroupEmail => Future.successful(completeGroup)
-      case _ => Future.successful(groupBuilder)
+      case complete if complete == completeGroupEmail => Future.successful(Some(completeGroup))
+      case _ => Future.successful(Some(groupBuilder))
     }
   }
 

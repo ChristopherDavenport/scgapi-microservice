@@ -25,17 +25,13 @@ class GroupsServiceRoutes(groupsService: GroupsService, authService: AuthService
       } ~
         post {
           entity(as[GroupBuilder]) { groupBuilder =>
-            complete(StatusCodes.Created, groupsService.createGroup(groupBuilder))
+            println(s"$userName has attempted to create $groupBuilder")
+            complete(StatusCodes.Created, groupsService.createGroup(groupBuilder.emailValidate))
           }
         } ~
-//        put {
-//          entity(as[GroupBuilder]) { groupBuilder =>
-//            complete(groupBuilder)
-//          }
-//        } ~
         delete {
           entity(as[GroupBuilder]) { groupBuilder =>
-            complete(groupsService.deleteGroup(groupBuilder).map(_ => HttpResponse(StatusCodes.NoContent)))
+            complete(groupsService.deleteGroup(groupBuilder.emailValidate).map(_ => HttpResponse(StatusCodes.NoContent)))
           }
         }
     } ~

@@ -31,16 +31,20 @@ trait JsonProtocol extends AkkaSprayJsonSupport with SprayDefaultJsonProtocol {
     }
 
     def read(value: JsValue) = value match {
+
       case completeGroup if Try(CompleteGroupJsonProtocol.read(value)).isSuccess =>
         CompleteGroupJsonProtocol.read(value)
-      case matchedGroup if Try(MatchedGroupJsonProtocol.read(value)).isSuccess &&
-        ( MatchedGroupJsonProtocol.read(value).adminCreated.isDefined ||
-          MatchedGroupJsonProtocol.read(value).count.isDefined ||
+
+      case matchedGroup if Try(MatchedGroupJsonProtocol.read(value)).isSuccess && (
+          MatchedGroupJsonProtocol.read(value).adminCreated.isDefined ||
+          MatchedGroupJsonProtocol.read(value).count.isDefined        ||
           MatchedGroupJsonProtocol.read(value).id.isDefined
-          ) =>
+        ) =>
         MatchedGroupJsonProtocol.read(value)
+
       case groupBuilder if Try(GroupBuilderJsonProtocol.read(value)).isSuccess =>
         GroupBuilderJsonProtocol.read(value)
+
       case _ => throw DeserializationException("Group Expected")
     }
   }
