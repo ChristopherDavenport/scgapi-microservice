@@ -5,4 +5,5 @@ package edu.eckerd.google.scgapi.services.core.members
   */
 trait MembersService {
 
+
 }
