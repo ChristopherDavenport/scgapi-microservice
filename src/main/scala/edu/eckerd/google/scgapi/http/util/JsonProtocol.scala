@@ -2,7 +2,9 @@ package edu.eckerd.google.scgapi.http.util
 
 import akka.http.scaladsl.marshallers.sprayjson.{SprayJsonSupport => AkkaSprayJsonSupport}
 import edu.eckerd.google.scgapi.models._
-import spray.json.{JsValue, JsonFormat, RootJsonFormat, DefaultJsonProtocol => SprayDefaultJsonProtocol, DeserializationException}
+import edu.eckerd.google.scgapi.models.MemberRole._
+import edu.eckerd.google.scgapi.models.{Member, CompleteMember, MatchedMember, MemberBuilder}
+import spray.json.{DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat, DefaultJsonProtocol => SprayDefaultJsonProtocol}
 
 import scala.util.Try
 
@@ -46,6 +48,42 @@ trait JsonProtocol extends AkkaSprayJsonSupport with SprayDefaultJsonProtocol {
         GroupBuilderJsonProtocol.read(value)
 
       case _ => throw DeserializationException("Group Expected")
+    }
+  }
+
+  implicit object MemberRoleJsonProtocol extends RootJsonFormat[MemberRole]{
+    def write(m: MemberRole) = m match {
+      case MEMBER   => JsString(MEMBER.entryName)
+      case OWNER    => JsString(OWNER.entryName)
+      case MANAGER  => JsString(MANAGER.entryName)
+    }
+
+    def read(value: JsValue): MemberRole = value match {
+      case JsString(string) => MemberRole.withNameInsensitiveOption(string)
+        .getOrElse(throw DeserializationException("Invalid MemberRole"))
+      case _ => throw DeserializationException("Expected MemberRole")
+    }
+  }
+
+  implicit val MatchedMemberJsonProtocol  = jsonFormat4(MatchedMember)
+  implicit val CompleteMemberJsonProtocol = jsonFormat4(CompleteMember)
+  implicit val MemberBuilderJsonProtocol  = jsonFormat2(MemberBuilder)
+
+  implicit object MemberJsonProtocol extends RootJsonFormat[Member]{
+    def write(m: Member) = m match {
+      case mb : MemberBuilder => MemberBuilderJsonProtocol.write(mb)
+      case mm : MatchedMember => MatchedMemberJsonProtocol.write(mm)
+      case cm : CompleteMember => CompleteMemberJsonProtocol.write(cm)
+    }
+
+    def read(json: JsValue): Member = json match {
+      case completeMember if Try(CompleteMemberJsonProtocol.read(completeMember)).isSuccess =>
+        CompleteMemberJsonProtocol.read(completeMember)
+      case matchedMember if Try(MatchedMemberJsonProtocol.read(matchedMember)).isSuccess =>
+        MatchedMemberJsonProtocol.read(matchedMember)
+      case memberBuilder if Try(MemberBuilderJsonProtocol.read(memberBuilder)).isSuccess =>
+        MemberBuilderJsonProtocol.read(memberBuilder)
+      case _ => throw DeserializationException("Expected Member")
     }
   }
 
