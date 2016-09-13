@@ -18,33 +18,38 @@ class MembersServiceRoutes(membersService: MembersService, authService: AuthServ
 
   import StatusCodes._
 
-  val route = pathPrefix("members") { authenticateBasic(realm = "*", authService.authenticate) { userName =>
-    pathEndOrSingleSlash{
-      get{
-        complete(Message(s"$userName Please Ask For a Get Request Against A Single Group"))
-      }
-    } ~
-      pathPrefix( Segment ){ groupEmailPrefix =>
-        pathEndOrSingleSlash{
-          get{
-            complete("")
+  val route = pathPrefix("groups") {
+    pathPrefix( Segment) { groupEmailPrefix =>
+      pathPrefix("members") {
+        authenticateBasic(realm = "*", authService.authenticate) { userName =>
+          pathEndOrSingleSlash {
+            get {
+              complete(Message(s"$userName Please Ask For a Get Request Against A Single Group"))
+            }
           } ~
-            post{
-              complete("")
-            } ~
-            delete{
-              complete("")
+            pathPrefix(Segment) { memberEmailPrefix =>
+              pathEndOrSingleSlash {
+                get {
+                  complete(Message(s"$userName -I don't know if $memberEmailPrefix is a member of $groupEmailPrefix"))
+                } ~
+                  post {
+                    complete("")
+                  } ~
+                  delete {
+                    complete("")
+                  }
+              } //~
+//                pathPrefix(Segment) { memberEmailPrefix =>
+//                  pathEndOrSingleSlash {
+//                    get {
+//                      complete("")
+//                    }
+//                  }
+//                }
             }
-        } ~
-        pathPrefix( Segment ){ memberEmailPrefix =>
-          pathEndOrSingleSlash{
-            get{
-              complete("")
-            }
-          }
         }
       }
-  }
+    }
   }
 
 }

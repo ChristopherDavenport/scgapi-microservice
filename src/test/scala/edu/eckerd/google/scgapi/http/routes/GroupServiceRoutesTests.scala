@@ -1,6 +1,5 @@
 package edu.eckerd.google.scgapi.http.routes
 
-import akka.http.javadsl.model.HttpEntity
 import akka.http.scaladsl.model.{HttpEntity, HttpResponse, StatusCodes}
 import akka.http.scaladsl.model.headers.BasicHttpCredentials
 import akka.http.scaladsl.server.Route
@@ -106,20 +105,6 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     }
 
   }
-
-//  it should "handle failure" in {
-//    val gb = GroupBuilder(nonGroupEmail, "name", Some("desc"))
-//    val validCredentials = BasicHttpCredentials("Chris Davenport", "password")
-//    intercept[TestError]{
-//    Post(s"/groups/", gb) ~> addCredentials(validCredentials) ~>
-//      Route.seal(groupsServiceRoutes.route) ~> check {
-//
-//        status === StatusCodes.Created
-//        responseAs[Group] shouldEqual gb
-//      }
-//
-//    }
-//  }
 
   "route /group - DELETE" should "return No Content After a Delete" in {
     val gb = GroupBuilder("email", "name", Some("desc"))

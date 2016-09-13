@@ -217,6 +217,13 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
     }
   }
 
+  it should "fail if it is given another non JsString Type" in {
+    val j = messageJsonProtocol.write(Message("Message"))
+    intercept[DeserializationException]{
+      MemberRoleJsonProtocol.read(j)
+    }
+  }
+
   it should "write the Enumerations to their String Values" in {
     MemberRoleJsonProtocol.write(MANAGER) shouldEqual JsString("MANAGER")
     MemberRoleJsonProtocol.write(OWNER) shouldEqual JsString("OWNER")
@@ -276,10 +283,5 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
       MemberJsonProtocol.read(JsString("Bad String!"))
     }
   }
-
-
-
-
-
 
 }

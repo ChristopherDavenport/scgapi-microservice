@@ -1,9 +1,8 @@
 package edu.eckerd.google.scgapi.persistence.database
 
-import java.sql.Timestamp
-
-import edu.eckerd.google.api.services.directory.models.{Email, Name, User}
-
+import edu.eckerd.google.api.services.directory.models.Email
+import edu.eckerd.google.api.services.directory.models.Name
+import edu.eckerd.google.api.services.directory.models.User
 
 /**
   * Created by davenpcm on 9/8/16.
@@ -14,27 +13,28 @@ trait GoogleTables {
 
   lazy val schema = googleUsers.schema ++ googleGroups.schema ++ googleMembers.schema
 
-  class GOOGLE_USERS(tag: Tag)  extends Table[User](tag, "GOOGLE_USERS") {
-    def googleID = column[String]("GOOGLE_ID", O.PrimaryKey)
-    def firstName = column[String]("FIRST_NAME")
-    def lastName = column[String]("LAST_NAME")
-    def email = column[String]("EMAIL")
-    def isPrimaryEmail = column[Boolean]("IS_PRIMARY_EMAIL")
-    def password = column[Option[String]]("PASSWORD") // Here Only For Matching
-    def orgUnitPath = column[String]("ORG_UNIT_PATH")
-    def agreedToTerms = column[Option[Boolean]]("AGREED_TO_TERMS")
-    def changePasswordAtNextLogin = column[Boolean]("CHANGE_PASSWORD_NEXT_LOGIN")
-    def includeInGlobalAddressList = column[Boolean]("INCLUDE_IN_GLOBAL_ADDRESS_LIST")
-    def ipWhiteListed = column[Boolean]("IP_WHITELISTED")
-    def isAdmin = column[Boolean]("IS_ADMIN")
-    def isMailboxSetup = column[Boolean]("IS_MAILBOX_SETUP")
-    def suspended = column[Boolean]("SUSPENDED")
+  class GOOGLE_USERS(tag: Tag) extends Table[User](tag, "GOOGLE_USERS") {
+    def googleID                    : Rep[String]           = column[String]("GOOGLE_ID", O.PrimaryKey)
+    def firstName                   : Rep[String]           = column[String]("FIRST_NAME")
+    def lastName                    : Rep[String]           = column[String]("LAST_NAME")
+    def email                       : Rep[String]           = column[String]("EMAIL")
+    def password                    : Rep[Option[String]]   = column[Option[String]]("PASSWORD")
+    def orgUnitPath                 : Rep[String]           = column[String]("ORG_UNIT_PATH")
+    def agreedToTerms               : Rep[Option[Boolean]]  = column[Option[Boolean]]("AGREED_TO_TERMS")
+    def changePasswordAtNextLogin   : Rep[Boolean]          = column[Boolean]("CHANGE_PASSWORD_NEXT_LOGIN")
+    def includeInGlobalAddressList  : Rep[Boolean]          = column[Boolean]("INCLUDE_IN_GLOBAL_ADDRESS_LIST")
+    def ipWhiteListed               : Rep[Boolean]          = column[Boolean]("IP_WHITELISTED")
+    def isAdmin                     : Rep[Boolean]          = column[Boolean]("IS_ADMIN")
+    def isMailboxSetup              : Rep[Boolean]          = column[Boolean]("IS_MAILBOX_SETUP")
+    def suspended                   : Rep[Boolean]          = column[Boolean]("SUSPENDED")
 
     def * = (
+      // Name Case Class
       (
         firstName,
         lastName
       ),
+      // Email Case Class Single Parameter
       email,
       password,
       googleID,
@@ -100,16 +100,17 @@ trait GoogleTables {
 
   lazy val googleUsers = new TableQuery(tag => new GOOGLE_USERS(tag))
 
-  case class GoogleGroupsRow(id: String,
-                             autoIndicator: String,
-                             name: String,
-                             email: String,
-                             count: Long,
-                             desc: Option[String],
-                             processIndicator: Option[String] = None,
-                             autoType: Option[String] = None,
-                             autoKey: Option[String] = None,
-                             autoTermCode : Option[String] = None
+  case class GoogleGroupsRow(
+                              id: String,
+                              autoIndicator: String,
+                              name: String,
+                              email: String,
+                              count: Long,
+                              desc: Option[String],
+                              processIndicator: Option[String] = None,
+                              autoType: Option[String] = None,
+                              autoKey: Option[String] = None,
+                              autoTermCode : Option[String] = None
                             )
 
   class GOOGLE_GROUPS(tag: Tag) extends Table[GoogleGroupsRow](tag, "GOOGLE_GROUPS"){
@@ -133,14 +134,13 @@ trait GoogleTables {
   lazy val googleGroups = new TableQuery(tag => new GOOGLE_GROUPS(tag))
 
   case class GoogleMembersRow(
-                                   groupId: String,
-                                   userID: String,
-                                   userEmail: Option[String],
-                                   autoIndicator: String,
-                                   memberRole: String,
-                                   memberType: String,
-                                   processIndicator: Option[String] = None
-                                 )
+                               groupId: String,
+                               userID: String,
+                               userEmail: Option[String],
+                               autoIndicator: String,
+                               memberRole: String,
+                               memberType: String
+                             )
 
   class GOOGLE_MEMBERS(tag: Tag) extends Table[GoogleMembersRow](tag, "GOOGLE_MEMBERS") {
     def groupId = column[String]("GROUP_ID")
@@ -149,53 +149,15 @@ trait GoogleTables {
     def autoIndicator = column[String]("AUTO_INDICATOR")
     def memberRole = column[String]("MEMBER_ROLE")
     def memberType = column[String]("MEMBER_TYPE")
-    def processIndicator = column[Option[String]]("PROCESS_INDICATOR")
 
     def pk = index("GOOGLE_GROUP_TO_USER_PK", (groupId, userID), unique = true)
     def group = foreignKey("GROUP_FK", groupId, googleGroups)(_.id ,
       onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade
     )
 
-    def * = (groupId, userID, userEmail, autoIndicator, memberRole, memberType, processIndicator) <>
+    def * = (groupId, userID, userEmail, autoIndicator, memberRole, memberType) <>
       (GoogleMembersRow.tupled, GoogleMembersRow.unapply )
   }
 
   lazy val googleMembers = new TableQuery(tag => new GOOGLE_MEMBERS(tag))
-
-
-//  case class GwbaliasRow(
-//                          typePkCk: String,
-//                          keyPk: String,
-//                          alias: String,
-//                          termCode: String,
-//                          createGroupCk: String,
-//                          createDate: Timestamp,
-//                          activityDate: Timestamp,
-//                          userId: String
-//                        )
-
-//  class GWBALIAS(tag: Tag) extends Table[GwbaliasRow](tag, "GWBALIAS") {
-//    def typePkCk = column[String]("GWBALIAS_TYPE_PK_CK")
-//    def keyPk = column[String]("GWBALIAS_KEY_PK")
-//    def alias = column[String]("GWBALIAS_ALIAS")
-//    def termCode = column[String]("GWBALIAS_TERM_CODE")
-//    def createGroupCk = column[String]("GWBALIAS_CREATE_GROUP_CK")
-//    def createDate =  column[Timestamp]("GWBALIAS_DATE_CREATED")
-//    def activityDate = column[Timestamp]("GWBALIAS_ACTIVITY_DATE")
-//    def userId= column[String]("GWBALIAS_USER_ID")
-//
-//    def * = (
-//      typePkCk,
-//      keyPk,
-//      alias,
-//      termCode,
-//      createGroupCk,
-//      createDate,
-//      activityDate,
-//      userId) <> (GwbaliasRow.tupled, GwbaliasRow.unapply)
-//
-//    def pk = primaryKey( "gwbalias_pk", (typePkCk, keyPk) )
-//  }
-//
-//  lazy val gwbAlias = new TableQuery(tag => new GWBALIAS(tag))
 }
