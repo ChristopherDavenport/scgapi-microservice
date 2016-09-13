@@ -14,7 +14,6 @@ trait MembersDirectoryServiceImpl extends MembersDirectoryService with MemberCon
 
   def getMember   (groupEmail: String, memberEmail: String)   : Option[Member]  = {
     val tryMembers = Try(directory.members.list(groupEmail))
-    println(tryMembers)
     tryMembers.toOption.flatMap{_.map(gMemberToMember)
       .collect{ case cm: CompleteMember => cm }
       .find(_.email == memberEmail)
@@ -28,7 +27,6 @@ trait MembersDirectoryServiceImpl extends MembersDirectoryService with MemberCon
 
   def createMember(groupEmail: String, member: MemberBuilder) : Member          = {
     val created = directory.members.add(groupEmail, member.email)
-    println(created)
     gMemberToMember(created)
   }
 

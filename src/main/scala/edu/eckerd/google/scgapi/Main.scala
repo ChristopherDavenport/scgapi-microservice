@@ -3,8 +3,9 @@ package edu.eckerd.google.scgapi
 import akka.actor.ActorSystem
 import akka.event.{Logging, LoggingAdapter}
 import akka.stream.ActorMaterializer
-import akka.http.scaladsl.Http
+import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
 import akka.http.scaladsl.server.Route
+import com.typesafe.sslconfig.akka.AkkaSSLConfig
 import edu.eckerd.google.scgapi.http.HttpServiceImpl
 import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
 import edu.eckerd.google.scgapi.services.core.groups.GroupsServiceBasicImpl
@@ -12,6 +13,9 @@ import edu.eckerd.google.scgapi.http.util.HttpConfig
 import edu.eckerd.google.scgapi.persistence.google.DirectoryService
 import edu.eckerd.google.scgapi.persistence.google.DirectoryServiceImpl
 import edu.eckerd.google.scgapi.services.core.members.MembersServiceImpl
+import java.io.{FileInputStream, InputStream, File}
+import java.security.{KeyStore, SecureRandom}
+import javax.net.ssl.{KeyManagerFactory, SSLContext, TrustManagerFactory}
 
 import scala.concurrent.ExecutionContext
 import scala.io.StdIn
@@ -25,7 +29,7 @@ object Main extends App with HttpConfig {
   implicit val log : LoggingAdapter = Logging(actorSystem, getClass)
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-
+  val sslConfig = AkkaSSLConfig()
 
 //  val databaseService = new DatabaseServiceImpl
   val directoryService: DirectoryService = DirectoryServiceImpl()
@@ -35,9 +39,10 @@ object Main extends App with HttpConfig {
   val httpService = HttpServiceImpl(groupsService, membersService, authService)
 
 
-  val bindingFuture = Http().bindAndHandle(Route.seal(httpService.routes), httpHost, httpPort)
+  val bindingFuture = Http().bindAndHandle(Route.seal(httpService.routes), httpHost, httpPort,
+    connectionContext = https)
 
-  log.info(s"Server online at http://$httpHost:$httpPort/ - Press RETURN to stop...")
+  log.info(s"Server online at https://$httpHost:$httpPort/ - Press RETURN to stop...")
   StdIn.readLine() // let it run until user presses return
   bindingFuture
     .flatMap(_.unbind()) // trigger unbinding from the port

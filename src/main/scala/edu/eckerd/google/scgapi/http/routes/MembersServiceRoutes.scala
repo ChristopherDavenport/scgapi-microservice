@@ -1,8 +1,7 @@
 package edu.eckerd.google.scgapi.http.routes
 
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
-import akka.http.scaladsl.server.Directives.{Segment, as, authenticateBasic, complete, delete, entity, get}
-import akka.http.scaladsl.server.Directives.{pathPrefix, post, rejectEmptyResponse, _}
+import akka.http.scaladsl.server.Directives._
 import edu.eckerd.google.scgapi.http.util.JsonProtocol
 import edu.eckerd.google.scgapi.models.MemberBuilder
 import edu.eckerd.google.scgapi.services.auth.AuthService

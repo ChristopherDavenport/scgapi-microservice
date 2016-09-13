@@ -3,6 +3,7 @@ package edu.eckerd.google.scgapi.persistence.database
 import edu.eckerd.google.api.services.directory.models.Email
 import edu.eckerd.google.api.services.directory.models.Name
 import edu.eckerd.google.api.services.directory.models.User
+import slick.lifted.MappedProjection
 
 /**
   * Created by Chris Davenport on 9/8/16.
@@ -114,20 +115,21 @@ trait GoogleTables {
                             )
 
   class GOOGLE_GROUPS(tag: Tag) extends Table[GoogleGroupsRow](tag, "GOOGLE_GROUPS"){
-    def id = column[String]("ID", O.PrimaryKey)
-    def autoIndicator = column[String]("AUTO_INDICATOR")
-    def name = column[String]("NAME")
-    def email = column[String]("EMAIL")
-    def count = column[Long]("MEMBER_COUNT")
-    def desc = column[Option[String]]("DESCRIPTION")
-    def processIndicator = column[Option[String]]("PROCESS_INDICATOR")
-    def autoType = column[Option[String]]("AUTO_TYPE")
-    def autoKey = column[Option[String]]("AUTO_KEY")
-    def autoTermCode = column[Option[String]]("AUTO_TERM_CODE")
+    def id                : Rep[String]         = column[String]("ID", O.PrimaryKey)
+    def autoIndicator     : Rep[String]         = column[String]("AUTO_INDICATOR")
+    def name              : Rep[String]         = column[String]("NAME")
+    def email             : Rep[String]         = column[String]("EMAIL")
+    def count             : Rep[Long]           = column[Long]("MEMBER_COUNT")
+    def desc              : Rep[Option[String]] = column[Option[String]]("DESCRIPTION")
+    def processIndicator  : Rep[Option[String]] = column[Option[String]]("PROCESS_INDICATOR")
+    def autoType          : Rep[Option[String]] = column[Option[String]]("AUTO_TYPE")
+    def autoKey           : Rep[Option[String]] = column[Option[String]]("AUTO_KEY")
+    def autoTermCode      : Rep[Option[String]] = column[Option[String]]("AUTO_TERM_CODE")
 
     def pk = index("GROUP_GROUPS_PK", (id, autoType, autoKey), unique = true)
 
-    def * = (id, autoIndicator , name, email, count, desc, processIndicator, autoType, autoKey, autoTermCode) <>
+    def * =
+      (id, autoIndicator , name, email, count, desc, processIndicator, autoType, autoKey, autoTermCode) <>
       (GoogleGroupsRow.tupled, GoogleGroupsRow.unapply)
   }
 
@@ -143,19 +145,20 @@ trait GoogleTables {
                              )
 
   class GOOGLE_MEMBERS(tag: Tag) extends Table[GoogleMembersRow](tag, "GOOGLE_MEMBERS") {
-    def groupId = column[String]("GROUP_ID")
-    def userID = column[String]("USER_ID")
-    def userEmail = column[Option[String]]("USER_EMAIL")
-    def autoIndicator = column[String]("AUTO_INDICATOR")
-    def memberRole = column[String]("MEMBER_ROLE")
-    def memberType = column[String]("MEMBER_TYPE")
+    def groupId       : Rep[String]         = column[String]("GROUP_ID")
+    def userID        : Rep[String]         = column[String]("USER_ID")
+    def userEmail     : Rep[Option[String]] = column[Option[String]]("USER_EMAIL")
+    def autoIndicator : Rep[String]         = column[String]("AUTO_INDICATOR")
+    def memberRole    : Rep[String]         = column[String]("MEMBER_ROLE")
+    def memberType    : Rep[String]         = column[String]("MEMBER_TYPE")
 
     def pk = index("GOOGLE_GROUP_TO_USER_PK", (groupId, userID), unique = true)
     def group = foreignKey("GROUP_FK", groupId, googleGroups)(_.id ,
       onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade
     )
 
-    def * = (groupId, userID, userEmail, autoIndicator, memberRole, memberType) <>
+    override def * =
+      (groupId, userID, userEmail, autoIndicator, memberRole, memberType) <>
       (GoogleMembersRow.tupled, GoogleMembersRow.unapply )
   }
 
