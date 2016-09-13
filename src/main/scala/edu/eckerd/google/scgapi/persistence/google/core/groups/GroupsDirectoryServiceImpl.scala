@@ -1,7 +1,7 @@
 package edu.eckerd.google.scgapi.persistence.google.core.groups
 
 import edu.eckerd.google.api.services.directory.Directory
-import edu.eckerd.google.scgapi.models.{Group, GroupBuilder}
+import edu.eckerd.google.scgapi.models.{CompleteGroup, Group, GroupBuilder, MatchedGroup}
 import edu.eckerd.google.scgapi.persistence.google.conversions.GroupConversions
 
 import scala.util.Try
@@ -18,7 +18,12 @@ trait GroupsDirectoryServiceImpl extends GroupsDirectoryService with GroupConver
     println(createdGroup)
     val finalGroup = createdGroup.toOption.map(gGroupToGroup)
     println(finalGroup)
-    finalGroup
+    finalGroup match {
+      case Some(MatchedGroup(email, name, Some(id), None, Some(desc), Some(adminCreated) )) =>
+        Some(CompleteGroup(email, name, id, 0L, Some(desc), adminCreated))
+      case _ => finalGroup
+    }
+
   }
 
   def deleteGroup(groupBuilder: GroupBuilder): Option[Unit] = {

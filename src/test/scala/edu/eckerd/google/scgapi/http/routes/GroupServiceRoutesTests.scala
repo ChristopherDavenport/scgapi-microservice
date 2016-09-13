@@ -56,9 +56,9 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
 
   val groupsService = new GroupsService {
     override def getGroupByEmail(email: String): Future[Option[Group]] = email match {
-      case _ if email == completeGroupEmail => Future(Some(completeGroup))
-      case _ if email == matchedGroupEmail => Future(Some(matchedGroup))
-      case _ if email == nonGroupEmail => Future(None)
+      case _ if email == completeGroupPrefix => Future(Some(completeGroup.copy(email=completeGroupEmail)))
+      case _ if email == matchedGroupPrefix => Future(Some(matchedGroup.copy(email = matchedGroupEmail)))
+      case _ if email == nonGroupEmailPrefix => Future(None)
     }
     //  def updateGroup(groupBuilder: GroupBuilder) : Future[Group]
     override def deleteGroup(groupBuilder: GroupBuilder): Future[Unit] = groupBuilder.email match {

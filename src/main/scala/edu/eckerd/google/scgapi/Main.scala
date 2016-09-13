@@ -30,7 +30,7 @@ object Main extends App with HttpConfig {
 //  val databaseService = new DatabaseServiceImpl
   val directoryService: DirectoryService = DirectoryServiceImpl()
   val groupsService = GroupsServiceBasicImpl(directoryService)
-  val membersService = new MembersServiceImpl
+  val membersService = MembersServiceImpl(directoryService)
   val authService = AuthServiceImpl(httpAccessPassword)
   val httpService = HttpServiceImpl(groupsService, membersService, authService)
 

@@ -1,9 +1,21 @@
 package edu.eckerd.google.scgapi.http.routes
 
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
+import akka.http.scaladsl.server.Directives.pathPrefix
+import akka.http.scaladsl.server.Directives.authenticateBasic
+import akka.http.scaladsl.server.Directives.pathEndOrSingleSlash
+import akka.http.scaladsl.server.Directives.delete
+import akka.http.scaladsl.server.Directives.get
+import akka.http.scaladsl.server.Directives.post
+import akka.http.scaladsl.server.Directives.entity
+import akka.http.scaladsl.server.Directives.as
+import akka.http.scaladsl.server.Directives.complete
+import akka.http.scaladsl.server.Directives.Segment
+import akka.http.scaladsl.server.Directives.rejectEmptyResponse
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.StandardRoute
 import edu.eckerd.google.scgapi.http.util.JsonProtocol
-import edu.eckerd.google.scgapi.models.Message
+import edu.eckerd.google.scgapi.models.{MemberBuilder, Message}
 import edu.eckerd.google.scgapi.services.auth.AuthService
 import edu.eckerd.google.scgapi.services.core.members.MembersService
 
@@ -16,36 +28,37 @@ class MembersServiceRoutes(membersService: MembersService, authService: AuthServ
                           (implicit executionContext: ExecutionContext)
   extends JsonProtocol {
 
-  import StatusCodes._
+  val route =  authenticateBasic(realm = "*", authService.authenticate) { userName =>
+    pathPrefix("groups") {
+      pathPrefix( Segment ) { groupEmailPrefix =>
+        pathPrefix("members") {
 
-  val route = pathPrefix("groups") {
-    pathPrefix( Segment) { groupEmailPrefix =>
-      pathPrefix("members") {
-        authenticateBasic(realm = "*", authService.authenticate) { userName =>
           pathEndOrSingleSlash {
             get {
-              complete(Message(s"$userName Please Ask For a Get Request Against A Single Group"))
-            }
+              complete(membersService.getMembers(groupEmailPrefix))
+            } ~
+              post {
+                entity(as[MemberBuilder]){ memberBuilder =>
+                  complete(StatusCodes.Created, membersService.createMember(groupEmailPrefix, memberBuilder))
+                }
+              } ~
+              delete {
+                entity(as[MemberBuilder]){ memberBuilder =>
+                  complete(membersService.deleteMember(groupEmailPrefix, memberBuilder.email)
+                    .map{ either => HttpResponse(StatusCodes.NoContent)})
+                }
+              }
           } ~
-            pathPrefix(Segment) { memberEmailPrefix =>
+            pathPrefix( Segment ) { memberEmailPrefix =>
               pathEndOrSingleSlash {
                 get {
-                  complete(Message(s"$userName -I don't know if $memberEmailPrefix is a member of $groupEmailPrefix"))
+                  rejectEmptyResponse(complete(membersService.getMember(groupEmailPrefix, memberEmailPrefix)))
                 } ~
-                  post {
-                    complete("")
-                  } ~
                   delete {
-                    complete("")
+                    complete(membersService.deleteMember(groupEmailPrefix, memberEmailPrefix)
+                      .map{ either => HttpResponse(StatusCodes.NoContent)})
                   }
-              } //~
-//                pathPrefix(Segment) { memberEmailPrefix =>
-//                  pathEndOrSingleSlash {
-//                    get {
-//                      complete("")
-//                    }
-//                  }
-//                }
+              }
             }
         }
       }

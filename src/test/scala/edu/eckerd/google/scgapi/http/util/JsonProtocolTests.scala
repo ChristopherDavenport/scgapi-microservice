@@ -6,7 +6,8 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import edu.eckerd.google.scgapi.models.{CompleteGroup, Group, GroupBuilder, MatchedGroup}
 import edu.eckerd.google.scgapi.models.{CompleteMember, MatchedMember, Member, MemberBuilder}
-import edu.eckerd.google.scgapi.models.MemberRole.{MANAGER, MEMBER, OWNER}
+import edu.eckerd.google.scgapi.models.MemberRoles.{MANAGER, MEMBER, OWNER}
+import edu.eckerd.google.scgapi.models.MemberTypes.{CUSTOMER, GROUP, USER}
 import edu.eckerd.google.scgapi.models.Message
 import org.scalatest.{FlatSpec, Matchers}
 import spray.json.{DeserializationException, JsString}
@@ -197,76 +198,76 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
 
   "MemberRoleJsonProtocol" should "parse a Jstring Uppercase valid Enumeration" in {
     val j = JsString("MEMBER")
-    MemberRoleJsonProtocol.read(j) shouldEqual MEMBER
+    MemberRolesJsonProtocol.read(j) shouldEqual MEMBER
   }
 
   it should "parse a Jstring Lowercase valid Enumeration" in {
     val j = JsString("owner")
-    MemberRoleJsonProtocol.read(j) shouldEqual OWNER
+    MemberRolesJsonProtocol.read(j) shouldEqual OWNER
   }
 
   it should "parse a Jstring Mixed Case Enumeration" in {
     val j = JsString("ManAgeR")
-    MemberRoleJsonProtocol.read(j) shouldEqual MANAGER
+    MemberRolesJsonProtocol.read(j) shouldEqual MANAGER
   }
 
   it should "fail if the string is not a valid Enumeration" in {
     val j = JsString("Monkey")
     intercept[DeserializationException]{
-      MemberRoleJsonProtocol.read(j)
+      MemberRolesJsonProtocol.read(j)
     }
   }
 
   it should "fail if it is given another non JsString Type" in {
     val j = messageJsonProtocol.write(Message("Message"))
     intercept[DeserializationException]{
-      MemberRoleJsonProtocol.read(j)
+      MemberRolesJsonProtocol.read(j)
     }
   }
 
   it should "write the Enumerations to their String Values" in {
-    MemberRoleJsonProtocol.write(MANAGER) shouldEqual JsString("MANAGER")
-    MemberRoleJsonProtocol.write(OWNER) shouldEqual JsString("OWNER")
-    MemberRoleJsonProtocol.write(MEMBER) shouldEqual JsString("MEMBER")
+    MemberRolesJsonProtocol.write(MANAGER) shouldEqual JsString("MANAGER")
+    MemberRolesJsonProtocol.write(OWNER) shouldEqual JsString("OWNER")
+    MemberRolesJsonProtocol.write(MEMBER) shouldEqual JsString("MEMBER")
   }
 
   "CompleteMemberJsonProtocol" should "be able to read and write a CompleteMember" in {
-    val cm = CompleteMember("email", "id", MEMBER, "USER")
+    val cm = CompleteMember("email", "id", MEMBER, USER)
     Post("/member/completemember", cm) ~> route ~> check {
       responseAs[CompleteMember] shouldEqual cm
     }
   }
 
   "MatchedMemberJsonProtocol" should "be able to read and write a MatchedMember" in {
-    val mm = MatchedMember(Some("email"), Some("id"), OWNER, "USER")
+    val mm = MatchedMember(Some("email"), Some("id"), OWNER, USER)
     Post("/member/matchedmember", mm) ~> route ~> check {
       responseAs[MatchedMember] shouldEqual mm
     }
   }
 
   "MemberBuilderJsonProtocol" should "be able to read and write a MemberBuilder" in {
-    val mb = MemberBuilder("email", Some(MANAGER))
+    val mb = MemberBuilder("email", MANAGER, USER)
     Post("/member/memberbuilder", mb) ~> route ~> check {
       responseAs[MemberBuilder] shouldEqual mb
     }
   }
 
   "MemberJsonProtocol" should "be able to read and write a CompleteMember" in {
-    val cm = CompleteMember("email", "id", MEMBER, "USER")
+    val cm = CompleteMember("email", "id", MEMBER, USER)
     Post("/member", cm) ~> route ~> check {
       responseAs[Member] shouldEqual cm
     }
   }
 
   it should "be able to read and write a MatchedMember" in {
-    val mm = MatchedMember(Some("email"), None, OWNER, "USER")
+    val mm = MatchedMember(None, Some("id"), OWNER, USER)
     Post("/member", mm) ~> route ~> check {
       responseAs[Member] shouldEqual mm
     }
   }
 
   it should "be able to read and write a MemberBuilder" in {
-    val mb = MemberBuilder("email", Some(MANAGER))
+    val mb = MemberBuilder("email", MANAGER, GROUP)
     Post("/member", mb) ~> route ~> check {
       responseAs[Member] shouldEqual mb
     }
