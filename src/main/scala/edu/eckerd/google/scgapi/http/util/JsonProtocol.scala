@@ -89,7 +89,7 @@ trait JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
 
 
   implicit object MemberJsonProtocol extends RootJsonFormat[Member]{
-    def write(m: Member) = m match {
+    def write(m: Member): JsValue = m match {
       case mb : MemberBuilder => memberBuilderJsonProtocol.write(mb)
       case mm : MatchedMember => matchedMemberJsonProtocol.write(mm)
       case cm : CompleteMember => completeMemberJsonProtocol.write(cm)

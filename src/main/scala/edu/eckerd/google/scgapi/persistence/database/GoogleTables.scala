@@ -1,9 +1,6 @@
 package edu.eckerd.google.scgapi.persistence.database
 
-import edu.eckerd.google.api.services.directory.models.Email
-import edu.eckerd.google.api.services.directory.models.Name
-import edu.eckerd.google.api.services.directory.models.User
-import slick.lifted.MappedProjection
+import edu.eckerd.google.api.services.directory.models.{Email, Name, User}
 
 /**
   * Created by Chris Davenport on 9/8/16.

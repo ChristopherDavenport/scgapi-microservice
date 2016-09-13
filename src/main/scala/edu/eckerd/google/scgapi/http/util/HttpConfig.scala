@@ -11,27 +11,27 @@ import com.typesafe.config.ConfigFactory
   * Created by Chris Davenport on 9/8/16.
   */
 trait HttpConfig {
-  lazy private val config = ConfigFactory.load()
-  lazy private val httpConfig = config.getConfig("http")
+  lazy private[this] val config = ConfigFactory.load()
+  lazy private[this] val httpConfig = config.getConfig("http")
   lazy val httpHost = httpConfig.getString("interface")
   lazy val httpPort = httpConfig.getInt("port")
   lazy val httpAccessPassword = httpConfig.getString("password")
 
-  lazy private val keystoreConfig = httpConfig.getConfig("ssl")
-  lazy private val httpsKeystorePassword: Array[Char] = keystoreConfig.getString("password").toCharArray
-  lazy private val httpsKeystoreType: String = keystoreConfig.getString("type")
-  lazy private val httpsKeystorePath: String = keystoreConfig.getString("path")
+  lazy private[this] val keystoreConfig = httpConfig.getConfig("ssl")
+  lazy private[this] val httpsKeystorePassword: Array[Char] = keystoreConfig.getString("password").toCharArray
+  lazy private[this] val httpsKeystoreType: String = keystoreConfig.getString("type")
+  lazy private[this] val httpsKeystorePath: String = keystoreConfig.getString("path")
 
 
 
-  private def createHttpsConnectionContext(keyStoreType: String,
+  private[this] def createHttpsConnectionContext(keyStoreType: String,
                                            keyStorePath: String,
                                            keyStorePassword: Array[Char]): HttpsConnectionContext = {
 
     val ks: KeyStore = KeyStore.getInstance("JKS")
     val keystore : InputStream = new FileInputStream(new File(keyStorePath))
 
-    require(keystore != null, "Keystore required!")
+    require(Option(keystore).isDefined, "Keystore required!")
     ks.load(keystore, keyStorePassword)
 
     keystore.close()

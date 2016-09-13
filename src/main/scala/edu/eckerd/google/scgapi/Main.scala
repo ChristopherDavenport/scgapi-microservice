@@ -3,7 +3,7 @@ package edu.eckerd.google.scgapi
 import akka.actor.ActorSystem
 import akka.event.{Logging, LoggingAdapter}
 import akka.stream.ActorMaterializer
-import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
+import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import com.typesafe.sslconfig.akka.AkkaSSLConfig
 import edu.eckerd.google.scgapi.http.HttpServiceImpl
@@ -13,9 +13,6 @@ import edu.eckerd.google.scgapi.http.util.HttpConfig
 import edu.eckerd.google.scgapi.persistence.google.DirectoryService
 import edu.eckerd.google.scgapi.persistence.google.DirectoryServiceImpl
 import edu.eckerd.google.scgapi.services.core.members.MembersServiceImpl
-import java.io.{FileInputStream, InputStream, File}
-import java.security.{KeyStore, SecureRandom}
-import javax.net.ssl.{KeyManagerFactory, SSLContext, TrustManagerFactory}
 
 import scala.concurrent.ExecutionContext
 import scala.io.StdIn
