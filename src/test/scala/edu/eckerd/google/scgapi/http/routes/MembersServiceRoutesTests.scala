@@ -15,13 +15,13 @@ import org.scalatest.Matchers
 import scala.concurrent.Future
 
 /**
-  * Created by davenpcm on 9/12/16.
+  * Created by Chris Davenport on 9/12/16.
   */
 class MembersServiceRoutesTests extends FlatSpec with Matchers with ScalatestRouteTest with JsonProtocol {
 
-  val completeMember = CompleteMember("cmemail", "id", OWNER, USER)
-  val matchedMember  = MatchedMember(None, Some("mmid"), MEMBER, USER)
-  val memberBuilder = MemberBuilder("mbemail", MANAGER, USER)
+  val completeMember = CompleteMember("cmEmail", "id", OWNER, USER)
+  val matchedMember  = MatchedMember(None, Some("mmId"), MEMBER, USER)
+  val memberBuilder = MemberBuilder("mbEmail", MANAGER, USER)
 
 
   class TestMemberService extends MembersService{
@@ -34,9 +34,12 @@ class MembersServiceRoutesTests extends FlatSpec with Matchers with ScalatestRou
     def getMembers  (groupEmail: String)                        : Future[Members] =
       Future.successful(Members(List(completeMember, matchedMember, memberBuilder)))
 
-    def createMember(groupEmail: String, member: MemberBuilder) : Future[Member] = ???
+    def createMember(groupEmail: String, member: MemberBuilder) : Future[Member] = member.email match {
+      case cm if cm == completeMember.email => Future.successful(completeMember.validateEmail)
+      case mb if mb == memberBuilder.email => Future.successful(memberBuilder.validateEmail)
+    }
 
-    def deleteMember(groupEmail: String, memberEmail: String)   : Future[Unit] = ???
+    def deleteMember(groupEmail: String, memberEmail: String)   : Future[Unit] = Future.successful(())
   }
   val authService = AuthServiceImpl("password")
   val membersService = new TestMemberService
@@ -62,14 +65,14 @@ class MembersServiceRoutesTests extends FlatSpec with Matchers with ScalatestRou
   }
 
   "Group Prefix / Member Prefix Endpoint - GET" should "be handled" in {
-    Get("/groups/groupPrefix/members/cmemail") ~>
+    Get("/groups/groupPrefix/members/cmEmail") ~>
       addCredentials(validCredentials) ~> Route.seal(groupsServiceRoutes.route) ~> check {
       handled shouldBe true
     }
   }
 
   "Endpoints Beyond Those Set Prefixes - GET" should "not be handled" in {
-    Get("/members/groupPrefix/members/cmemail/nonsense") ~>
+    Get("/members/groupPrefix/members/cmEmail/nonsense") ~>
       addCredentials(validCredentials) ~> groupsServiceRoutes.route ~> check {
       handled shouldBe false
     }

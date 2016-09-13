@@ -7,7 +7,7 @@ import edu.eckerd.google.scgapi.persistence.google.conversions.MemberConversions
 import scala.util.Try
 
 /**
-  * Created by davenpcm on 9/13/16.
+  * Created by Chris Davenport on 9/13/16.
   */
 trait MembersDirectoryServiceImpl extends MembersDirectoryService with MemberConversions {
   val directory: Directory

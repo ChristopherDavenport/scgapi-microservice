@@ -9,7 +9,7 @@ import edu.eckerd.google.scgapi.services.core.CoreFunctions
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
-  * Created by davenpcm on 9/9/16.
+  * Created by Chris Davenport on 9/9/16.
   */
 class MembersServiceImpl(membersDirectoryService: MembersDirectoryService)
                         (implicit executionContext: ExecutionContext) extends MembersService with CoreFunctions {

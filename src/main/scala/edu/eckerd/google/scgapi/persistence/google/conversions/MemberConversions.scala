@@ -4,7 +4,7 @@ import edu.eckerd.google.api.services.directory.models.{Member => gMember}
 import edu.eckerd.google.scgapi.models._
 
 /**
-  * Created by davenpcm on 9/13/16.
+  * Created by Chris Davenport on 9/13/16.
   */
 trait MemberConversions {
 

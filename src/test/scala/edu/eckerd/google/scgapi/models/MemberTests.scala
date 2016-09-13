@@ -5,7 +5,7 @@ import MemberRoles.{MANAGER, OWNER, MEMBER}
 import MemberTypes.{CUSTOMER, GROUP, USER}
 
 /**
-  * Created by davenpcm on 9/12/16.
+  * Created by Chris Davenport on 9/12/16.
   */
 class MemberTests extends FlatSpec with Matchers {
 

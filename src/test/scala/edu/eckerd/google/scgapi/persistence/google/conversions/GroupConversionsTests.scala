@@ -5,7 +5,7 @@ import edu.eckerd.google.scgapi.models.{Group, CompleteGroup, MatchedGroup, Grou
 import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 class GroupConversionsTests extends FlatSpec with Matchers with GroupConversions {
 
@@ -47,7 +47,8 @@ class GroupConversionsTests extends FlatSpec with Matchers with GroupConversions
   }
 
   it should "convert a gGroup with all options present to a CompleteGroup" in {
-    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), true)
+    val adminCreated = true
+    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), adminCreated)
     val gg = GGroup(
       "name",
       "email",
@@ -76,7 +77,8 @@ class GroupConversionsTests extends FlatSpec with Matchers with GroupConversions
   }
 
   "completeGroupToGGroup" should "convert a completeGroup to a GGroup" in {
-    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), true)
+    val adminCreated = true
+    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), adminCreated)
     val gg = GGroup(
       "name",
       "email",

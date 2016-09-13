@@ -3,7 +3,7 @@ package edu.eckerd.google.scgapi.http.util
 import com.typesafe.config.ConfigFactory
 
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 trait HttpConfig {
   lazy private val config = ConfigFactory.load()

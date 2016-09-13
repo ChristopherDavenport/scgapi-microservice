@@ -22,13 +22,13 @@ import edu.eckerd.google.scgapi.services.core.members.MembersService
 import scala.concurrent.ExecutionContext
 
 /**
-  * Created by davenpcm on 9/12/16.
+  * Created by Chris Davenport on 9/12/16.
   */
 class MembersServiceRoutes(membersService: MembersService, authService: AuthService)
                           (implicit executionContext: ExecutionContext)
   extends JsonProtocol {
 
-  val route =  authenticateBasic(realm = "*", authService.authenticate) { userName =>
+  val route =  authenticateBasic(realm = "*", authService.authenticate) { _ =>
     pathPrefix("groups") {
       pathPrefix( Segment ) { groupEmailPrefix =>
         pathPrefix("members") {
@@ -45,7 +45,7 @@ class MembersServiceRoutes(membersService: MembersService, authService: AuthServ
               delete {
                 entity(as[MemberBuilder]){ memberBuilder =>
                   complete(membersService.deleteMember(groupEmailPrefix, memberBuilder.email)
-                    .map{ either => HttpResponse(StatusCodes.NoContent)})
+                    .map{ _ => HttpResponse(StatusCodes.NoContent)})
                 }
               }
           } ~
@@ -56,7 +56,7 @@ class MembersServiceRoutes(membersService: MembersService, authService: AuthServ
                 } ~
                   delete {
                     complete(membersService.deleteMember(groupEmailPrefix, memberEmailPrefix)
-                      .map{ either => HttpResponse(StatusCodes.NoContent)})
+                      .map{ _ => HttpResponse(StatusCodes.NoContent)})
                   }
               }
             }

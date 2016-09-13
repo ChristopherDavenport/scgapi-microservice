@@ -5,7 +5,7 @@ import edu.eckerd.google.scgapi.models.{Group, GroupBuilder, MatchedGroup}
 import scala.concurrent.Future
 
 /**
-  * Created by davenpcm on 9/9/16.
+  * Created by Chris Davenport on 9/9/16.
   */
 trait GroupsService {
   def getGroupByEmail(email: String)          : Future[Option[Group]]

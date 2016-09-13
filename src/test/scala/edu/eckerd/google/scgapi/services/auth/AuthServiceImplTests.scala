@@ -5,7 +5,7 @@ import akka.http.scaladsl.server.directives.Credentials
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
-  * Created by davenpcm on 9/10/16.
+  * Created by Chris Davenport on 9/10/16.
   */
 class AuthServiceImplTests extends FlatSpec with Matchers {
 

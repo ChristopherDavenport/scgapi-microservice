@@ -6,7 +6,7 @@ import edu.eckerd.google.scgapi.services.auth.AuthService
 import edu.eckerd.google.scgapi.http.util.JsonProtocol
 
 /**
-  * Created by davenpcm on 9/9/16.
+  * Created by Chris Davenport on 9/9/16.
   */
 class TestServiceRoutes(authService: AuthService) extends JsonProtocol{
 

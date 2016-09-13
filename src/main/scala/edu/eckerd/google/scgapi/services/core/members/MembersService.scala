@@ -5,7 +5,7 @@ import edu.eckerd.google.scgapi.models.MemberBuilder
 import edu.eckerd.google.scgapi.models.Members
 import scala.concurrent.Future
 /**
-  * Created by davenpcm on 9/9/16.
+  * Created by Chris Davenport on 9/9/16.
   */
 trait MembersService {
 

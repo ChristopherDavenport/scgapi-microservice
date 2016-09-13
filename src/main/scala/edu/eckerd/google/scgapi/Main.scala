@@ -17,7 +17,7 @@ import scala.concurrent.ExecutionContext
 import scala.io.StdIn
 
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 object Main extends App with HttpConfig {
   implicit val actorSystem = ActorSystem("scgapi")

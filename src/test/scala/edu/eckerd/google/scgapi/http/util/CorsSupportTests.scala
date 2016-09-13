@@ -11,7 +11,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ Directive0, Route }
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 class CorsSupportTests extends FlatSpec with Matchers with ScalatestRouteTest with CorsSupport{
 

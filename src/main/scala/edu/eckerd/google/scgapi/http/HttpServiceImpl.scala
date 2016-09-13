@@ -10,7 +10,7 @@ import edu.eckerd.google.scgapi.services.core.members.MembersService
 
 import scala.concurrent.ExecutionContext
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 class HttpServiceImpl(groupsService: GroupsService, membersService: MembersService, authService: AuthService)
                      (implicit executionContext: ExecutionContext) extends HttpService with  CorsSupport {

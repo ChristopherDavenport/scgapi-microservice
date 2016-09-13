@@ -28,7 +28,7 @@ import spray.json.DefaultJsonProtocol
 import scala.util.Try
 
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 trait JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
 
@@ -54,18 +54,18 @@ trait JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
 
     def read(value: JsValue) = value match {
 
-      case completeGroup if Try(CompleteGroupJsonProtocol.read(value)).isSuccess =>
-        CompleteGroupJsonProtocol.read(value)
+      case completeGroup if Try(CompleteGroupJsonProtocol.read(completeGroup)).isSuccess =>
+        CompleteGroupJsonProtocol.read(completeGroup)
 
-      case matchedGroup if Try(MatchedGroupJsonProtocol.read(value)).isSuccess && (
-          MatchedGroupJsonProtocol.read(value).adminCreated.isDefined ||
-          MatchedGroupJsonProtocol.read(value).count.isDefined        ||
-          MatchedGroupJsonProtocol.read(value).id.isDefined
+      case matchedGroup if Try(MatchedGroupJsonProtocol.read(matchedGroup)).isSuccess && (
+          MatchedGroupJsonProtocol.read(matchedGroup).adminCreated.isDefined ||
+          MatchedGroupJsonProtocol.read(matchedGroup).count.isDefined        ||
+          MatchedGroupJsonProtocol.read(matchedGroup).id.isDefined
         ) =>
         MatchedGroupJsonProtocol.read(value)
 
-      case groupBuilder if Try(GroupBuilderJsonProtocol.read(value)).isSuccess =>
-        GroupBuilderJsonProtocol.read(value)
+      case groupBuilder if Try(GroupBuilderJsonProtocol.read(groupBuilder)).isSuccess =>
+        GroupBuilderJsonProtocol.read(groupBuilder)
 
       case _ => throw DeserializationException("Group Expected")
     }
@@ -95,11 +95,9 @@ trait JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
     }
 
     def read(json: JsValue): MemberTypes = json match {
-
       case JsString(string) => MemberTypes.withNameInsensitiveOption(string)
           .getOrElse(throw DeserializationException("Invalid MemberType"))
-
-      case _                => throw DeserializationException("Expected MemberType")
+      case _                => throw DeserializationException("Expecting Member")
     }
 
   }

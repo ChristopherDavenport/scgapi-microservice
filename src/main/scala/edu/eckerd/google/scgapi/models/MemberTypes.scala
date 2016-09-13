@@ -4,7 +4,7 @@ import enumeratum.EnumEntry
 import enumeratum.Enum
 
 /**
-  * Created by davenpcm on 9/13/16.
+  * Created by Chris Davenport on 9/13/16.
   */
 sealed trait MemberTypes extends EnumEntry
 

@@ -12,13 +12,16 @@ import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.Future
 /**
-  * Created by davenpcm on 9/10/16.
+  * Created by Chris Davenport on 9/10/16.
   */
 class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRouteTest with JsonProtocol  {
 
   val authService = AuthServiceImpl("password")
 
-  val completeGroupPrefix = "completegroup"
+
+
+  val trueAdminCreated = true
+  val completeGroupPrefix = "completeGroup"
   val completeGroupEmail = completeGroupPrefix + "@eckerd.edu"
   val completeGroup = CompleteGroup(
     completeGroupEmail,
@@ -26,10 +29,10 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     "CompleteLongNonsense11231233",
     4L,
     Some("Best Group Ever"),
-    true
+    trueAdminCreated
   )
 
-  val matchedGroupPrefix = "matchedgroup"
+  val matchedGroupPrefix = "matchedGroup"
   val matchedGroupEmail = matchedGroupPrefix + "@eckerd.edu"
   val matchedGroup = MatchedGroup(
     matchedGroupEmail,
@@ -40,7 +43,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     Some(true)
   )
 
-  val groupBuilderEmailPrefix = "groupbuilder"
+  val groupBuilderEmailPrefix = "groupBuilder"
   val groupBuilderEmail = groupBuilderEmailPrefix + "@eckerd.edu"
   val groupBuilder = GroupBuilder(
     groupBuilderEmail,
@@ -48,7 +51,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     Some("Group Builder Description")
   )
 
-  val nonGroupEmailPrefix = "nongroup"
+  val nonGroupEmailPrefix = "nonGroup"
   val nonGroupEmail = nonGroupEmailPrefix + "@eckerd.edu"
 
   class TestError extends Throwable
@@ -84,7 +87,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     }
   }
 
-  "route /group - POST" should "indicate if it succesfully created the resource" in {
+  "route /group - POST" should "indicate if it successfully created the resource" in {
     val gb = groupBuilder
     val validCredentials = BasicHttpCredentials("Chris Davenport", "password")
     Post(s"/groups/", gb) ~> addCredentials(validCredentials) ~>

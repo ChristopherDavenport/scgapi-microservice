@@ -1,7 +1,7 @@
 package edu.eckerd.google.scgapi.services.core
 
 /**
-  * Created by davenpcm on 9/13/16.
+  * Created by Chris Davenport on 9/13/16.
   */
 trait CoreFunctions {
 

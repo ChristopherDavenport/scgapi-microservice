@@ -3,7 +3,7 @@ package edu.eckerd.google.scgapi.models
 import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
 
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 sealed trait Group{
   val email: String
@@ -46,10 +46,10 @@ object Group{
              adminCreated: Option[Boolean]
            ): Group = {
     for{
-      pid <- id
-      pcount <- count
-      padminCreated <- adminCreated
-    } yield CompleteGroup(email, name, pid, pcount, desc, padminCreated)
+      pId <- id
+      pCount <- count
+      pAdminCreated <- adminCreated
+    } yield CompleteGroup(email, name, pId, pCount, desc, pAdminCreated)
   }
     .getOrElse {
       if (id.isDefined || count.isDefined || adminCreated.isDefined) {

@@ -3,12 +3,14 @@ package edu.eckerd.google.scgapi.models
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 class GroupTests extends FlatSpec with Matchers {
 
+  val trueAdminCreated = true
+
   "Group apply" should "create a Complete Group if all fields are present" in {
-    val cg = CompleteGroup("email", "name", "id", 1L, Some("desc"), true)
+    val cg = CompleteGroup("email", "name", "id", 1L, Some("desc"), trueAdminCreated)
     Group(cg.email, cg.name, cg.id, cg.count, cg.desc, cg.adminCreated) shouldEqual cg
   }
 
@@ -51,7 +53,7 @@ class GroupTests extends FlatSpec with Matchers {
   }
 
   it should "create a CompleteGroup if all optional values are present in the option constructor pattern" in {
-    val cg = CompleteGroup("email", "name", "id", 1L, Some("desc"), true)
+    val cg = CompleteGroup("email", "name", "id", 1L, Some("desc"), trueAdminCreated)
     Group("email", "name", Some("id"), Some(1L), Some("desc"), Some(true)) shouldEqual cg
   }
 
@@ -70,7 +72,7 @@ class GroupTests extends FlatSpec with Matchers {
     val n = "name"
     val d = Some("desc")
     val gb = GroupBuilder(e, n, d)
-    val cg = CompleteGroup(e,n, "id", 4L, Some("desc"), true)
+    val cg = CompleteGroup(e,n, "id", 4L, Some("desc"), trueAdminCreated)
     cg.asGroupBuilder shouldEqual gb
   }
 
@@ -92,7 +94,7 @@ class GroupTests extends FlatSpec with Matchers {
   }
 
   "asMatchedGroup" should "convert CompleteGroup to MatchedGroup" in {
-    val cg = CompleteGroup("email","name", "id", 4L, Some("desc"), true)
+    val cg = CompleteGroup("email","name", "id", 4L, Some("desc"), trueAdminCreated)
     val mg = MatchedGroup("email", "name", Some("id"), Some(4L), Some("desc"), Some(true))
     cg.asMatchedGroup shouldEqual mg
   }

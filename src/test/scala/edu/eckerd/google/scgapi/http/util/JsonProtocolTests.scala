@@ -13,12 +13,13 @@ import org.scalatest.{FlatSpec, Matchers}
 import spray.json.{DeserializationException, JsString}
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest with JsonProtocol {
 
   object GroupExamples {
-    val completeGroupPrefix = "completegroup"
+    val adminCreatedTrue = true
+    val completeGroupPrefix = "completeGroup"
     val completeGroupEmail = completeGroupPrefix + "@eckerd.edu"
     val completeGroup = CompleteGroup(
       completeGroupEmail,
@@ -26,10 +27,10 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
       "CompleteLongNonsense11231233",
       4L,
       Some("Best Group Ever"),
-      true
+      adminCreatedTrue
     )
 
-    val matchedGroupPrefix = "matchedgroup"
+    val matchedGroupPrefix = "matchedGroup"
     val matchedGroupEmail = matchedGroupPrefix + "@eckerd.edu"
     val matchedGroup = MatchedGroup(
       matchedGroupEmail,
@@ -40,7 +41,7 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
       Some(true)
     )
 
-    val groupBuilderEmailPrefix = "groupbuilder"
+    val groupBuilderEmailPrefix = "groupBuilder"
     val groupBuilderEmail = groupBuilderEmailPrefix + "@eckerd.edu"
     val groupBuilder = GroupBuilder(
       groupBuilderEmail,
@@ -58,7 +59,7 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
           }
         }
       } ~
-        pathPrefix("completegroup") {
+        pathPrefix("completeGroup") {
           pathEndOrSingleSlash {
             post {
               entity(as[CompleteGroup]) { completeGroup =>
@@ -67,7 +68,7 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
             }
           }
         } ~
-        pathPrefix("matchedgroup") {
+        pathPrefix("matchedGroup") {
           pathEndOrSingleSlash {
             post {
               entity(as[MatchedGroup]) { matchedGroup =>
@@ -76,7 +77,7 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
             }
           }
         } ~
-        pathPrefix("groupbuilder") {
+        pathPrefix("groupBuilder") {
           pathEndOrSingleSlash {
             post {
               entity(as[GroupBuilder]) { groupBuilder =>
@@ -103,7 +104,7 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
         }
       }
     } ~
-    pathPrefix("completemember"){
+    pathPrefix("completeMember"){
       pathEndOrSingleSlash {
         post {
           entity(as[CompleteMember]) { completeMember =>
@@ -112,20 +113,20 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
         }
       }
     } ~
-    pathPrefix("matchedmember"){
+    pathPrefix("matchedMember"){
       pathEndOrSingleSlash{
         post{
-          entity(as[MatchedMember]){ matchedmember =>
-            complete(matchedmember)
+          entity(as[MatchedMember]){ matchedMember =>
+            complete(matchedMember)
           }
         }
       }
     } ~
-    pathPrefix("memberbuilder"){
+    pathPrefix("memberBuilder"){
       pathEndOrSingleSlash{
         post{
-          entity(as[MemberBuilder]){ memberbuilder =>
-            complete(memberbuilder)
+          entity(as[MemberBuilder]){ memberBuilder =>
+            complete(memberBuilder)
           }
         }
       }
@@ -172,19 +173,19 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
   }
 
   "CompleteGroupJsonProtocol" should "be able to read and write a CompleteGroup" in {
-    Post("/group/completegroup", GroupExamples.completeGroup) ~> route ~> check {
+    Post("/group/completeGroup", GroupExamples.completeGroup) ~> route ~> check {
       responseAs[CompleteGroup] shouldEqual GroupExamples.completeGroup
     }
   }
 
   "MatchedGroupJsonProtocol" should "be able to read and write a MatchedGroup" in {
-    Post("/group/matchedgroup", GroupExamples.matchedGroup) ~> route ~> check {
+    Post("/group/matchedGroup", GroupExamples.matchedGroup) ~> route ~> check {
       responseAs[MatchedGroup] shouldEqual GroupExamples.matchedGroup
     }
   }
 
   "GroupBuilderJsonProtocol" should "be able to read and write a GroupBuilder" in {
-    Post("/group/groupbuilder", GroupExamples.groupBuilder) ~> route ~> check {
+    Post("/group/groupBuilder", GroupExamples.groupBuilder) ~> route ~> check {
       responseAs[GroupBuilder] shouldEqual GroupExamples.groupBuilder
     }
   }
@@ -196,17 +197,17 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
     }
   }
 
-  "MemberRoleJsonProtocol" should "parse a Jstring Uppercase valid Enumeration" in {
+  "MemberRoleJsonProtocol" should "parse a JsString Uppercase valid Enumeration" in {
     val j = JsString("MEMBER")
     MemberRolesJsonProtocol.read(j) shouldEqual MEMBER
   }
 
-  it should "parse a Jstring Lowercase valid Enumeration" in {
+  it should "parse a JsString Lowercase valid Enumeration" in {
     val j = JsString("owner")
     MemberRolesJsonProtocol.read(j) shouldEqual OWNER
   }
 
-  it should "parse a Jstring Mixed Case Enumeration" in {
+  it should "parse a JsString Mixed Case Enumeration" in {
     val j = JsString("ManAgeR")
     MemberRolesJsonProtocol.read(j) shouldEqual MANAGER
   }
@@ -233,21 +234,21 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
 
   "CompleteMemberJsonProtocol" should "be able to read and write a CompleteMember" in {
     val cm = CompleteMember("email", "id", MEMBER, USER)
-    Post("/member/completemember", cm) ~> route ~> check {
+    Post("/member/completeMember", cm) ~> route ~> check {
       responseAs[CompleteMember] shouldEqual cm
     }
   }
 
   "MatchedMemberJsonProtocol" should "be able to read and write a MatchedMember" in {
     val mm = MatchedMember(Some("email"), Some("id"), OWNER, USER)
-    Post("/member/matchedmember", mm) ~> route ~> check {
+    Post("/member/matchedMember", mm) ~> route ~> check {
       responseAs[MatchedMember] shouldEqual mm
     }
   }
 
   "MemberBuilderJsonProtocol" should "be able to read and write a MemberBuilder" in {
     val mb = MemberBuilder("email", MANAGER, USER)
-    Post("/member/memberbuilder", mb) ~> route ~> check {
+    Post("/member/memberBuilder", mb) ~> route ~> check {
       responseAs[MemberBuilder] shouldEqual mb
     }
   }

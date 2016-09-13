@@ -7,7 +7,7 @@ import edu.eckerd.google.scgapi.services.core.CoreFunctions
 
 import scala.concurrent.{ExecutionContext, Future}
 /**
-  * Created by davenpcm on 9/10/16.
+  * Created by Chris Davenport on 9/10/16.
   */
 class GroupsServiceBasicImpl(groupsDirectoryService: GroupsDirectoryService)
                             (implicit executionContext: ExecutionContext) extends GroupsService with CoreFunctions{

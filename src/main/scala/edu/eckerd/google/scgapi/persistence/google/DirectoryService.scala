@@ -7,7 +7,7 @@ import edu.eckerd.google.scgapi.persistence.google.core.groups.GroupsDirectorySe
 import edu.eckerd.google.scgapi.persistence.google.core.members.MembersDirectoryService
 
 /**
-  * Created by davenpcm on 9/10/16.
+  * Created by Chris Davenport on 9/10/16.
   */
 trait DirectoryService extends GroupsDirectoryService with MembersDirectoryService {
 

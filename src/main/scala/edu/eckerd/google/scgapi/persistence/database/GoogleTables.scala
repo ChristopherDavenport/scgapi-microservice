@@ -5,7 +5,7 @@ import edu.eckerd.google.api.services.directory.models.Name
 import edu.eckerd.google.api.services.directory.models.User
 
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 trait GoogleTables {
   val profile : slick.driver.JdbcProfile
