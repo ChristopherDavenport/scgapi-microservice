@@ -1,7 +1,6 @@
 package edu.eckerd.google.scgapi.models
 
-import enumeratum.EnumEntry
-import enumeratum.Enum
+import enumeratum.{Enum, EnumEntry}
 
 /**
   * Created by Chris Davenport on 9/13/16.

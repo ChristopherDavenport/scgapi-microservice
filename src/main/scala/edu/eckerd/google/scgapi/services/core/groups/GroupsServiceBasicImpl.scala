@@ -1,6 +1,6 @@
 package edu.eckerd.google.scgapi.services.core.groups
 
-import edu.eckerd.google.scgapi.models.{Group, GroupBuilder, MatchedGroup}
+import edu.eckerd.google.scgapi.models.{Group, GroupBuilder}
 import edu.eckerd.google.scgapi.persistence.google.DirectoryService
 import edu.eckerd.google.scgapi.persistence.google.core.groups.GroupsDirectoryService
 import edu.eckerd.google.scgapi.services.core.CoreFunctions

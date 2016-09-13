@@ -1,8 +1,7 @@
 package edu.eckerd.google.scgapi.services.core.members
 
-import edu.eckerd.google.scgapi.models.Member
-import edu.eckerd.google.scgapi.models.MemberBuilder
-import edu.eckerd.google.scgapi.models.Members
+import edu.eckerd.google.scgapi.models.{Member, MemberBuilder, Members}
+
 import scala.concurrent.Future
 /**
   * Created by Chris Davenport on 9/9/16.

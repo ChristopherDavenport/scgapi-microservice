@@ -1,7 +1,5 @@
 package edu.eckerd.google.scgapi.models
 
-import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
-
 /**
   * Created by Chris Davenport on 9/8/16.
   */

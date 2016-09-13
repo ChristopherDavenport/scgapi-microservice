@@ -1,12 +1,12 @@
 package edu.eckerd.google.scgapi.http.routes
 
-import akka.http.scaladsl.model.{HttpEntity, HttpResponse, StatusCodes}
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.BasicHttpCredentials
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
 import edu.eckerd.google.scgapi.http.util.JsonProtocol
 import edu.eckerd.google.scgapi.models._
+import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
 import edu.eckerd.google.scgapi.services.core.groups.GroupsService
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -17,8 +17,6 @@ import scala.concurrent.Future
 class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRouteTest with JsonProtocol  {
 
   val authService = AuthServiceImpl("password")
-
-
 
   val trueAdminCreated = true
   val completeGroupPrefix = "completeGroup"

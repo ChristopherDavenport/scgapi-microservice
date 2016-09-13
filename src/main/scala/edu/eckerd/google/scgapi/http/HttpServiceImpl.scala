@@ -3,9 +3,9 @@ package edu.eckerd.google.scgapi.http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import edu.eckerd.google.scgapi.http.routes.{GroupsServiceRoutes, MembersServiceRoutes, TestServiceRoutes}
+import edu.eckerd.google.scgapi.http.util.CorsSupport
 import edu.eckerd.google.scgapi.services.auth.AuthService
 import edu.eckerd.google.scgapi.services.core.groups.GroupsService
-import edu.eckerd.google.scgapi.http.util.{CorsSupport, HttpConfig}
 import edu.eckerd.google.scgapi.services.core.members.MembersService
 
 import scala.concurrent.ExecutionContext

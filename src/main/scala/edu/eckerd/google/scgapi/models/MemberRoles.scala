@@ -1,6 +1,6 @@
 package edu.eckerd.google.scgapi.models
 
-import enumeratum._
+import enumeratum.{Enum, EnumEntry}
 
 sealed trait MemberRoles extends EnumEntry
 

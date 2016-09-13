@@ -1,10 +1,10 @@
 package edu.eckerd.google.scgapi.persistence.database
 
-import org.scalatest.{AsyncFlatSpec, FlatSpec, Matchers}
-import slick.backend.DatabaseConfig
-import slick.driver.JdbcProfile
 import edu.eckerd.google.api.services.directory.models.{Email => gEmail, Name => gName, User => gUser}
 import org.h2.jdbc.JdbcSQLException
+import org.scalatest.{AsyncFlatSpec, Matchers}
+import slick.backend.DatabaseConfig
+import slick.driver.JdbcProfile
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

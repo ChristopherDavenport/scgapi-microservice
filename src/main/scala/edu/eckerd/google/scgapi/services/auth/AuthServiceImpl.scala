@@ -1,8 +1,6 @@
 package edu.eckerd.google.scgapi.services.auth
 
 import akka.http.scaladsl.server.directives.Credentials
-import akka.http.scaladsl.server.directives._
-import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * Created by Chris Davenport on 9/9/16.

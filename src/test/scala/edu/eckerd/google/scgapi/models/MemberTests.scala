@@ -14,11 +14,11 @@ class MemberTests extends FlatSpec with Matchers {
   }
 
   it should "generate a MatchedMember if the email field is missing" in {
-    Member(None, Some("id"), MEMBER, USER) shouldEqual MatchedMember(None, Some("id"), MEMBER, USER)
+    Member(None, Some("id"), MEMBER, GROUP) shouldEqual MatchedMember(None, Some("id"), MEMBER, GROUP)
   }
 
   it should "create a MemberBuilder if " in {
-    Member(Some("email"), None, OWNER, USER) shouldEqual MemberBuilder("email", OWNER, USER)
+    Member(Some("email"), None, OWNER, CUSTOMER) shouldEqual MemberBuilder("email", OWNER, CUSTOMER)
   }
 
 }

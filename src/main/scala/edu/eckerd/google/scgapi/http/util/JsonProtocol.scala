@@ -1,29 +1,10 @@
 package edu.eckerd.google.scgapi.http.util
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import edu.eckerd.google.scgapi.models.CompleteGroup
-import edu.eckerd.google.scgapi.models.CompleteMember
-import edu.eckerd.google.scgapi.models.Group
-import edu.eckerd.google.scgapi.models.GroupBuilder
-import edu.eckerd.google.scgapi.models.MatchedGroup
-import edu.eckerd.google.scgapi.models.MatchedMember
-import edu.eckerd.google.scgapi.models.Message
-import edu.eckerd.google.scgapi.models.Member
-import edu.eckerd.google.scgapi.models.MemberBuilder
-import edu.eckerd.google.scgapi.models.Members
-import edu.eckerd.google.scgapi.models.MemberRoles
-import edu.eckerd.google.scgapi.models.MemberRoles.MANAGER
-import edu.eckerd.google.scgapi.models.MemberRoles.MEMBER
-import edu.eckerd.google.scgapi.models.MemberRoles.OWNER
-import edu.eckerd.google.scgapi.models.MemberTypes
-import edu.eckerd.google.scgapi.models.MemberTypes.CUSTOMER
-import edu.eckerd.google.scgapi.models.MemberTypes.GROUP
-import edu.eckerd.google.scgapi.models.MemberTypes.USER
-import spray.json.DeserializationException
-import spray.json.JsString
-import spray.json.JsValue
-import spray.json.RootJsonFormat
-import spray.json.DefaultJsonProtocol
+import edu.eckerd.google.scgapi.models.MemberRoles.{MANAGER, MEMBER, OWNER}
+import edu.eckerd.google.scgapi.models.MemberTypes.{CUSTOMER, GROUP, USER}
+import edu.eckerd.google.scgapi.models._
+import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, RootJsonFormat}
 
 import scala.util.Try
 

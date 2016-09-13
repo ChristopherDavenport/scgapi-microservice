@@ -4,13 +4,12 @@ import akka.http.scaladsl.model.headers.BasicHttpCredentials
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import edu.eckerd.google.scgapi.http.util.JsonProtocol
-import edu.eckerd.google.scgapi.models.MemberRoles.{MEMBER, OWNER, MANAGER}
+import edu.eckerd.google.scgapi.models.MemberRoles.{MANAGER, MEMBER, OWNER}
 import edu.eckerd.google.scgapi.models.MemberTypes.USER
 import edu.eckerd.google.scgapi.models._
 import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
 import edu.eckerd.google.scgapi.services.core.members.MembersService
-import org.scalatest.FlatSpec
-import org.scalatest.Matchers
+import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.Future
 

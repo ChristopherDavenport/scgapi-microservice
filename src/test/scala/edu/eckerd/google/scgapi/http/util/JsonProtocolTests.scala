@@ -4,11 +4,9 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import edu.eckerd.google.scgapi.models.{CompleteGroup, Group, GroupBuilder, MatchedGroup}
-import edu.eckerd.google.scgapi.models.{CompleteMember, MatchedMember, Member, MemberBuilder}
 import edu.eckerd.google.scgapi.models.MemberRoles.{MANAGER, MEMBER, OWNER}
-import edu.eckerd.google.scgapi.models.MemberTypes.{CUSTOMER, GROUP, USER}
-import edu.eckerd.google.scgapi.models.Message
+import edu.eckerd.google.scgapi.models.MemberTypes.{GROUP, USER}
+import edu.eckerd.google.scgapi.models._
 import org.scalatest.{FlatSpec, Matchers}
 import spray.json.{DeserializationException, JsString}
 
