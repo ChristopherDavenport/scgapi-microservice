@@ -8,9 +8,9 @@ import edu.eckerd.google.scgapi.models._
   */
 trait UsersDirectoryService {
 
-  def getUser(userEmail: String): Option[User]
-  def getUsers: Users
-  def createUser(userBuilder: UserBuilder): User
+  def getUser(userEmail: String): Either[ErrorResponse, User]
+  def getUsers: Either[ErrorResponse, Users]
+  def createUser(userBuilder: UserBuilder): Either[ErrorResponse, User]
 
 
 }

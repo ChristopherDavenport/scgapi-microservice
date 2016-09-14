@@ -1,6 +1,6 @@
 package edu.eckerd.google.scgapi.services.core.users
 
-import edu.eckerd.google.scgapi.models.{User, UserBuilder, Users}
+import edu.eckerd.google.scgapi.models.{ErrorResponse, User, UserBuilder, Users}
 import edu.eckerd.google.scgapi.persistence.google.core.users.UsersDirectoryService
 import edu.eckerd.google.scgapi.services.core.CoreFunctions
 
@@ -12,14 +12,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class UsersServiceImpl(usersDirectoryService: UsersDirectoryService)
                       (implicit executionContext: ExecutionContext) extends UsersService with CoreFunctions {
 
-  def getUser(userEmail: String): Future[Option[User]] = Future{
+  def getUser(userEmail: String): Future[Either[ErrorResponse, User]] = Future{
     val parsedEmail = emailParse(userEmail)
     usersDirectoryService.getUser(parsedEmail)
   }
-  def getUsers: Future[Users] = Future{
+  def getUsers: Future[Either[ErrorResponse, Users]] = Future{
     usersDirectoryService.getUsers
   }
-  def createUser(userBuilder: UserBuilder): Future[User] = Future{
+
+  def createUser(userBuilder: UserBuilder): Future[Either[ErrorResponse,User]] = Future{
     val userBuilderWithParsedEmail = userBuilder.copy(email = emailParse(userBuilder.email))
     usersDirectoryService.createUser(userBuilderWithParsedEmail)
   }

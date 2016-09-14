@@ -129,6 +129,52 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
         }
       }
     }
+  } ~
+  pathPrefix("user"){
+    pathEndOrSingleSlash{
+      post{
+        entity(as[User]){ user =>
+          complete(user)
+        }
+      }
+    } ~
+    pathPrefix("completeUser"){
+      pathEndOrSingleSlash{
+        post{
+          entity(as[CompleteUser]){ completeUser =>
+            complete(completeUser)
+          }
+        }
+      }
+    } ~
+    pathPrefix("matchedUser"){
+      pathEndOrSingleSlash{
+        post{
+          entity(as[MatchedUser]){ matchedUser =>
+            complete(matchedUser)
+          }
+        }
+      }
+    } ~
+    pathPrefix("userBuilder"){
+      pathEndOrSingleSlash{
+        post{
+          entity(as[UserBuilder]){ userBuilder =>
+            complete(userBuilder)
+          }
+        }
+      }
+    } ~
+    pathPrefix("users"){
+      pathEndOrSingleSlash{
+        post{
+          entity(as[Users]){ users =>
+            complete(users)
+
+          }
+        }
+      }
+    }
   }
 
   "GroupJsonProtocol" should "be able to read and write a Complete Group" in {
@@ -281,6 +327,71 @@ class JsonProtocolTests extends FlatSpec with Matchers with ScalatestRouteTest w
   it should "fail when given a JsString" in {
     intercept[DeserializationException]{
       MemberJsonProtocol.read(JsString("Bad String!"))
+    }
+  }
+
+  object userTestsObjects{
+    private[this] val defaultTrue = true
+
+    val completeUser = CompleteUser(
+      "firstName", "lastName", "email", "id", "/",
+      defaultTrue, defaultTrue, defaultTrue, defaultTrue, defaultTrue, defaultTrue, defaultTrue
+    )
+    val matchedUser = MatchedUser(
+      "firstName", "lastName", "email", None, None, "/",
+      Some(defaultTrue), defaultTrue, defaultTrue, defaultTrue, defaultTrue, defaultTrue, defaultTrue
+    )
+    val userBuilder = UserBuilder("firstName", "lastName", "email", "password", None, None, None)
+
+    val users = Users(List(completeUser, matchedUser, userBuilder))
+
+  }
+
+  "completeUserJsonProtocol" should "be able to read and write a CompleteUser" in {
+    Post("/user/completeUser", userTestsObjects.completeUser) ~> route ~> check {
+      responseAs[CompleteUser] shouldEqual userTestsObjects.completeUser
+    }
+  }
+
+  "matchedUserJsonProtocol" should "be able to read and write a MatchedUser" in {
+    Post("/user/matchedUser", userTestsObjects.matchedUser) ~> route ~> check {
+      responseAs[MatchedUser] shouldEqual userTestsObjects.matchedUser
+    }
+  }
+
+  "userBuilderJsonProtocol" should "be able to read and write a UserBuilder" in {
+    Post("/user/userBuilder", userTestsObjects.userBuilder) ~> route ~> check {
+      responseAs[UserBuilder] shouldEqual userTestsObjects.userBuilder
+    }
+  }
+
+  "userJsonProtocol" should "be able to read and write a CompleteUser" in {
+    Post("/user", userTestsObjects.completeUser) ~> route ~> check {
+      responseAs[User] shouldEqual userTestsObjects.completeUser
+    }
+  }
+
+  it should "be able to read and write a MatchedUser" in {
+    Post("/user", userTestsObjects.matchedUser) ~> route ~> check {
+      responseAs[User] shouldEqual userTestsObjects.matchedUser
+    }
+  }
+
+  it should "be able to read and write a UserBuilder" in {
+    Post("/user", userTestsObjects.userBuilder) ~> route ~> check {
+      responseAs[User] shouldEqual userTestsObjects.userBuilder
+    }
+  }
+
+  it should "fail to parse another object" in {
+    intercept[DeserializationException]{
+      MemberJsonProtocol.read(JsString("Nonsense String"))
+    }
+  }
+
+  "usersJsonProtocol" should "be able to read and write a Users" in {
+    Post("/user/users", userTestsObjects.users) ~> route ~> check {
+      responseAs[Users] shouldEqual userTestsObjects.users
     }
   }
 

@@ -1,4 +1,4 @@
-package edu.eckerd.google.scgapi.persistence.google.conversions
+package edu.eckerd.google.scgapi.persistence.google.core.members
 
 import edu.eckerd.google.api.services.directory.models.{Member => gMember}
 import edu.eckerd.google.scgapi.models._

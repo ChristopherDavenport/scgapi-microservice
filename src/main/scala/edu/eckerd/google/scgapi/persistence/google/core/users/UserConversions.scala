@@ -1,7 +1,7 @@
-package edu.eckerd.google.scgapi.persistence.google.conversions
+package edu.eckerd.google.scgapi.persistence.google.core.users
 
-import edu.eckerd.google.api.services.directory.models.{User => gUser, Name => gName, Email => gEmail}
-import edu.eckerd.google.scgapi.models.{User, CompleteUser, MatchedUser, UserBuilder}
+import edu.eckerd.google.api.services.directory.models.{Email => gEmail, Name => gName, User => gUser}
+import edu.eckerd.google.scgapi.models.User
 
 /**
   * Created by davenpcm on 9/14/16.

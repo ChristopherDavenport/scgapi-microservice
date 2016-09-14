@@ -133,4 +133,6 @@ trait JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit val usersJsonProtocol = jsonFormat1(Users)
 
+  implicit val errorEntryJsonProtocol = jsonFormat2(ErrorEntry)
+
 }
