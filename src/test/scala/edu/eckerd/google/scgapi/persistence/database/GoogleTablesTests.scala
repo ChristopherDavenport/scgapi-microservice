@@ -1,24 +1,32 @@
 package edu.eckerd.google.scgapi.persistence.database
 
-import org.scalatest.{AsyncFlatSpec, FlatSpec, Matchers}
-import slick.backend.DatabaseConfig
-import slick.driver.JdbcProfile
 import edu.eckerd.google.api.services.directory.models.{Email => gEmail, Name => gName, User => gUser}
 import org.h2.jdbc.JdbcSQLException
+import org.scalatest.{AsyncFlatSpec, Matchers}
+import slick.backend.DatabaseConfig
+import slick.driver.JdbcProfile
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 class GoogleTablesTests extends AsyncFlatSpec with Matchers with HasDB with GoogleTables {
   val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig("database")
   import profile.api._
 
-  val ggRow = GoogleGroupsRow("groupid", "y", "name", "email", 4L, Some("desc"))
-  val ggRow2 = GoogleGroupsRow("groupid2", "y", "name", "email", 4L, Some("desc"))
+  val ggRow = GoogleGroupsRow("groupId", "y", "name", "email", 4L, Some("desc"))
+  val ggRow2 = GoogleGroupsRow("groupId2", "y", "name", "email", 4L, Some("desc"))
+  object ggUserBooleans {
+    val changePasswordFalse = false
+    val includeInGlobalAddressTrue = true
+    val ipWhiteListedTrue = true
+    val isAdminFalse = false
+    val isMailboxSetupTrue = true
+    val isSuspendedFalse = false
+  }
   val ggUser = gUser(
     gName("Chris", "Davenport"),
     gEmail("email"),
@@ -26,9 +34,14 @@ class GoogleTablesTests extends AsyncFlatSpec with Matchers with HasDB with Goog
     Some("userId"),
     "",
     None,
-    false, true, true, false, true, false
+    ggUserBooleans.changePasswordFalse,
+    ggUserBooleans.includeInGlobalAddressTrue,
+    ggUserBooleans.ipWhiteListedTrue,
+    ggUserBooleans.isAdminFalse,
+    ggUserBooleans.isMailboxSetupTrue,
+    ggUserBooleans.isSuspendedFalse
   )
-  val ggMember = GoogleMembersRow("groupid","userId", Some("email"), "Y", "MEMBER", "USER")
+  val ggMember = GoogleMembersRow("groupId","userId", Some("email"), "Y", "MEMBER", "USER")
 
   "schema.create" should "create the schema" in {
 

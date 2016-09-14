@@ -1,17 +1,13 @@
 package edu.eckerd.google.scgapi.http.util
 
-import akka.http.scaladsl.model.headers.Origin
+import akka.http.scaladsl.model.HttpMethods._
+import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.{FlatSpec, Matchers}
-import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.headers._
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{ Directive0, Route }
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 class CorsSupportTests extends FlatSpec with Matchers with ScalatestRouteTest with CorsSupport{
 

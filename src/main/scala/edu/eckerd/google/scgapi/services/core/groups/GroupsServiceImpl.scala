@@ -8,7 +8,7 @@
 //import scala.concurrent.Future
 //
 ///**
-//  * Created by davenpcm on 9/9/16.
+//  * Created by Chris Davenport on 9/9/16.
 //  */
 //class GroupsServiceImpl(
 //                         databaseService: DatabaseService,

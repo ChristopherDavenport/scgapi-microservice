@@ -1,17 +1,16 @@
 package edu.eckerd.google.scgapi.http.routes
 
-import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{BasicHttpCredentials, HttpChallenge, `WWW-Authenticate`}
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.testkit.ScalatestRouteTest
+import edu.eckerd.google.scgapi.http.util.JsonProtocol
 import edu.eckerd.google.scgapi.models.Message
 import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
-import edu.eckerd.google.scgapi.http.util.JsonProtocol
-import org.scalatest.Matchers
-import org.scalatest.FlatSpec
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
-  * Created by davenpcm on 9/10/16.
+  * Created by Chris Davenport on 9/10/16.
   */
 class TestServiceRoutesTests extends FlatSpec with Matchers with ScalatestRouteTest with JsonProtocol {
 

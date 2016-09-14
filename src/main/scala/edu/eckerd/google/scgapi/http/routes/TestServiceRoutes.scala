@@ -1,12 +1,12 @@
 package edu.eckerd.google.scgapi.http.routes
 
 import akka.http.scaladsl.server.Directives._
+import edu.eckerd.google.scgapi.http.util.JsonProtocol
 import edu.eckerd.google.scgapi.models.Message
 import edu.eckerd.google.scgapi.services.auth.AuthService
-import edu.eckerd.google.scgapi.http.util.JsonProtocol
 
 /**
-  * Created by davenpcm on 9/9/16.
+  * Created by Chris Davenport on 9/9/16.
   */
 class TestServiceRoutes(authService: AuthService) extends JsonProtocol{
 

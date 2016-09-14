@@ -28,6 +28,7 @@ lazy val dependencySettings = Seq(
   libraryDependencies ++= {
     val slickV = "3.1.0"
     val akkaV = "2.4.10"
+    val enumeratumV = "1.4.14"
     List(
       "edu.eckerd" %% "google-api-scala" % "0.1.0",
       "com.typesafe.slick" %% "slick" % slickV,
@@ -42,7 +43,8 @@ lazy val dependencySettings = Seq(
       "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0",
 //      "io.monix" %% "monix" % "2.0.0"
 //      "io.monix" %% "monix-cats" % "2.0.0"
-      "org.typelevel" %% "cats" % "0.7.2"
+      "org.typelevel" %% "cats" % "0.7.2",
+      "com.beachape" %% "enumeratum" % enumeratumV
     )
   }
 )

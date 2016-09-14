@@ -4,7 +4,7 @@ import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
 import edu.eckerd.google.scgapi.models.{CompleteGroup, Group, GroupBuilder, MatchedGroup}
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 trait GroupConversions {
 

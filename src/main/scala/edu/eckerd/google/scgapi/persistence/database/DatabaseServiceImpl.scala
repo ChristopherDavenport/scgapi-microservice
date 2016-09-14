@@ -7,7 +7,7 @@ import slick.driver.JdbcProfile
 import scala.concurrent.Future
 
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 class DatabaseServiceImpl extends DatabaseService with HasDB {
   val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig("database")

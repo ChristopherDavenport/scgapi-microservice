@@ -1,11 +1,9 @@
 package edu.eckerd.google.scgapi.services.auth
 
 import akka.http.scaladsl.server.directives.Credentials
-import akka.http.scaladsl.server.directives._
-import scala.concurrent.{ExecutionContext, Future}
 
 /**
-  * Created by davenpcm on 9/9/16.
+  * Created by Chris Davenport on 9/9/16.
   */
 class AuthServiceImpl(private val httpAccessPassword: String) extends AuthService {
 

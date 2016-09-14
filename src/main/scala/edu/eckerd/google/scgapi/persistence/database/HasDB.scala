@@ -3,7 +3,7 @@ package edu.eckerd.google.scgapi.persistence.database
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 trait HasDB {
   implicit val dbConfig: DatabaseConfig[JdbcProfile]

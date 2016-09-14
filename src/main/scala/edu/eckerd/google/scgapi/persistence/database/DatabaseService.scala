@@ -4,7 +4,7 @@ import edu.eckerd.google.scgapi.models.{CompleteGroup, MatchedGroup}
 
 import scala.concurrent.Future
 /**
-  * Created by davenpcm on 9/8/16.
+  * Created by Chris Davenport on 9/8/16.
   */
 trait DatabaseService {
   def groupExists(email: String): Future[Boolean]

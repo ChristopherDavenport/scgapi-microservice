@@ -1,23 +1,14 @@
 package edu.eckerd.google.scgapi.persistence.google.conversions
 
-import org.scalatest.{FlatSpec, Matchers}
-import edu.eckerd.google.scgapi.models.{Group, CompleteGroup, MatchedGroup, GroupBuilder}
 import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
+import edu.eckerd.google.scgapi.models.{CompleteGroup, GroupBuilder, MatchedGroup}
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
-  * Created by davenpcm on 9/11/16.
+  * Created by Chris Davenport on 9/11/16.
   */
 class GroupConversionsTests extends FlatSpec with Matchers with GroupConversions {
 
-//  GGroup(
-//    name = groupBuilder.name,
-//    email = groupBuilder.email,
-//    id = None,
-//    description = groupBuilder.desc,
-//    directMemberCount = None,
-//    members = None,
-//    adminCreated = Some(true)
-//  )
   "gGroupToGroup" should "convert a gGroup with all options missing to a GroupBuilder" in {
     val gb = GroupBuilder("email", "name", Some("desc"))
     val gg = GGroup(
@@ -47,7 +38,8 @@ class GroupConversionsTests extends FlatSpec with Matchers with GroupConversions
   }
 
   it should "convert a gGroup with all options present to a CompleteGroup" in {
-    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), true)
+    val adminCreated = true
+    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), adminCreated)
     val gg = GGroup(
       "name",
       "email",
@@ -76,7 +68,8 @@ class GroupConversionsTests extends FlatSpec with Matchers with GroupConversions
   }
 
   "completeGroupToGGroup" should "convert a completeGroup to a GGroup" in {
-    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), true)
+    val adminCreated = true
+    val cg = CompleteGroup("email", "name", "id", 4L, Some("desc"), adminCreated)
     val gg = GGroup(
       "name",
       "email",
