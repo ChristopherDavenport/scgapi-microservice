@@ -25,3 +25,11 @@ class UsersServiceImpl(usersDirectoryService: UsersDirectoryService)
   }
 
 }
+
+object UsersServiceImpl {
+
+  def apply(usersDirectoryService: UsersDirectoryService)
+           (implicit executionContext: ExecutionContext): UsersServiceImpl =
+    new UsersServiceImpl(usersDirectoryService)(executionContext)
+
+}

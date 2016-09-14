@@ -108,4 +108,29 @@ trait JsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit val membersJsonProtocol = jsonFormat1(Members)
 
+
+  implicit val completeUserJsonProtocol = jsonFormat12(CompleteUser)
+  implicit val matchedUserJsonProtocol = jsonFormat13(MatchedUser)
+  implicit val userBuilderJsonProtocol = jsonFormat7(UserBuilder)
+
+  implicit object UserJsonProtocol extends RootJsonFormat[User]{
+    def write(u: User): JsValue = u match {
+      case completeUser : CompleteUser  => completeUserJsonProtocol.write(completeUser)
+      case matchedUser  : MatchedUser   => matchedUserJsonProtocol.write(matchedUser)
+      case userBuilder  : UserBuilder   => userBuilderJsonProtocol.write(userBuilder)
+    }
+
+    def read(json: JsValue): User = json match {
+      case completeUser if Try(completeUserJsonProtocol.read(completeUser)).isSuccess =>
+        completeUserJsonProtocol.read(completeUser)
+      case matchedUser  if Try(matchedUserJsonProtocol.read(matchedUser)).isSuccess =>
+        matchedUserJsonProtocol.read(matchedUser)
+      case userBuilder  if Try(userBuilderJsonProtocol.read(userBuilder)).isSuccess =>
+        userBuilderJsonProtocol.read(userBuilder)
+      case _ => throw DeserializationException("Expected User")
+    }
+  }
+
+  implicit val usersJsonProtocol = jsonFormat1(Users)
+
 }
