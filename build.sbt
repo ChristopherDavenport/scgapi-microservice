@@ -2,7 +2,7 @@
 lazy val buildSettings = Seq(
   name := "scgapi-microservice",
   organization := "edu.eckerd",
-  version := "0.1.0-SNAPSHOT",
+  version := "0.0.1-SNAPSHOT",
   scalaVersion := "2.11.8"
 )
 
