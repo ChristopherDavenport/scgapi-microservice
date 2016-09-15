@@ -13,6 +13,7 @@ import edu.eckerd.google.scgapi.http.util.HttpConfig
 import edu.eckerd.google.scgapi.persistence.google.DirectoryService
 import edu.eckerd.google.scgapi.persistence.google.DirectoryServiceImpl
 import edu.eckerd.google.scgapi.services.core.members.MembersServiceImpl
+import edu.eckerd.google.scgapi.services.core.users.UsersServiceImpl
 
 import scala.concurrent.ExecutionContext
 import scala.io.StdIn
@@ -32,8 +33,9 @@ object Main extends App with HttpConfig {
   val directoryService: DirectoryService = DirectoryServiceImpl()
   val groupsService = GroupsServiceBasicImpl(directoryService)
   val membersService = MembersServiceImpl(directoryService)
+  val usersService = UsersServiceImpl(directoryService)
   val authService = AuthServiceImpl(httpAccessPassword)
-  val httpService = HttpServiceImpl(groupsService, membersService, authService)
+  val httpService = HttpServiceImpl(groupsService, membersService, usersService, authService)
 
 
   val bindingFuture = Http().bindAndHandle(Route.seal(httpService.routes), httpHost, httpPort,

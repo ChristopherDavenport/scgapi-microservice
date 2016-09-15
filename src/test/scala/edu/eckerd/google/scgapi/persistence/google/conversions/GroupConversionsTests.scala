@@ -2,6 +2,7 @@ package edu.eckerd.google.scgapi.persistence.google.conversions
 
 import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
 import edu.eckerd.google.scgapi.models.{CompleteGroup, GroupBuilder, MatchedGroup}
+import edu.eckerd.google.scgapi.persistence.google.core.groups.GroupConversions
 import org.scalatest.{FlatSpec, Matchers}
 
 /**

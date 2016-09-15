@@ -1,4 +1,4 @@
-package edu.eckerd.google.scgapi.persistence.google.conversions
+package edu.eckerd.google.scgapi.persistence.google.core.groups
 
 import edu.eckerd.google.api.services.directory.models.{Group => GGroup}
 import edu.eckerd.google.scgapi.models.{CompleteGroup, Group, GroupBuilder, MatchedGroup}

@@ -2,7 +2,6 @@ package edu.eckerd.google.scgapi.persistence.google.core.groups
 
 import edu.eckerd.google.api.services.directory.Directory
 import edu.eckerd.google.scgapi.models.{CompleteGroup, Group, GroupBuilder, MatchedGroup}
-import edu.eckerd.google.scgapi.persistence.google.conversions.GroupConversions
 
 import scala.util.Try
 /**

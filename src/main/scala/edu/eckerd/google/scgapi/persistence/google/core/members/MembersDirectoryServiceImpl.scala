@@ -2,7 +2,6 @@ package edu.eckerd.google.scgapi.persistence.google.core.members
 
 import edu.eckerd.google.api.services.directory.Directory
 import edu.eckerd.google.scgapi.models.{CompleteMember, Member, MemberBuilder, Members}
-import edu.eckerd.google.scgapi.persistence.google.conversions.MemberConversions
 
 import scala.util.Try
 
