@@ -1,3 +1,4 @@
+enablePlugins(JavaServerAppPackaging, RpmPlugin, SystemdPlugin)
 
 lazy val buildSettings = Seq(
   name := "scgapi-microservice",
@@ -55,8 +56,36 @@ lazy val scoverageSettings = Seq(
   coverageExcludedFiles := ".*/src/test/.*"
 )
 
+lazy val appPackagerSettings = Seq(
+  name in Linux := name.value,
+  maintainer := "Christopher Davenport <ChristopherDavenport@outlook.com>",
+  packageSummary := "Google Organization RESTful Controls",
+  packageDescription :=
+    """This application takes simple config values and allows you to leverage control over your
+      |google organization.
+    """.stripMargin,
+  packageArchitecture in Linux := "x86_64",
+  version in Linux := "0.0.1",
+  rpmRelease := "1",
+  rpmVendor := "eckerd",
+  rpmUrl := Some("https://github.com/ChristopherDavenport/scgapi-microservice"),
+  rpmLicense := Some("Apache 2.0"),
+  daemonUser in Rpm := "scgapi",
+  linuxPackageMappings in Rpm := linuxPackageMappings.value,
+  packageArchitecture in Rpm := "x86_64",
+  defaultLinuxStartScriptLocation in Debian := "/usr/lib/systemd/system",
+  rpmRequirements := Seq("java"),
+  defaultLinuxInstallLocation := "/opt/package_root",
+  rpmPrefix := Some(defaultLinuxInstallLocation.value),
+  linuxPackageSymlinks := Seq.empty,
+  defaultLinuxLogsLocation := defaultLinuxInstallLocation + "/" + name
+
+)
+
 
 lazy val coreSettings = buildSettings ++ commonSettings ++ dependencySettings ++ scoverageSettings
 
 lazy val scgapi = project.in(file("."))
   .settings(coreSettings:_*)
+  .settings(appPackagerSettings:_*)
+
