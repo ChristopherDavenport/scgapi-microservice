@@ -1,35 +1,42 @@
 package edu.eckerd.google.scgapi.persistence.google.core.members
 
 import edu.eckerd.google.api.services.directory.Directory
-import edu.eckerd.google.scgapi.models.{CompleteMember, Member, MemberBuilder, Members}
+import edu.eckerd.google.scgapi.models._
+import edu.eckerd.google.scgapi.persistence.google.core.shared.GoogleErrorHandling
 
-import scala.util.Try
 
 /**
   * Created by Chris Davenport on 9/13/16.
   */
-trait MembersDirectoryServiceImpl extends MembersDirectoryService with MemberConversions {
+trait MembersDirectoryServiceImpl extends MembersDirectoryService with MemberConversions with GoogleErrorHandling {
   val directory: Directory
 
-  def getMember   (groupEmail: String, memberEmail: String)   : Option[Member]  = {
-    val tryMembers = Try(directory.members.list(groupEmail))
-    tryMembers.toOption.flatMap{_.map(gMemberToMember)
-      .collect{ case cm: CompleteMember => cm }
+  def getMember   (groupEmail: String, memberEmail: String)   : Either[ErrorResponse, Member]  = handleGoogleErrors{
+
+    val members = directory.members.list(groupEmail).map(gMemberToMember)
+
+    val member = members
+      .collect { case cm: CompleteMember => cm}
       .find(_.email == memberEmail)
+      .getOrElse {
+      // We throw a custom 404 Missing Error To Be Caught If the Member Doesn't Exist
+      throw new Throwable("404 - Missing")
     }
+
+    member
   }
 
-  def getMembers  (groupEmail: String)                        : Members         = {
+  def getMembers  (groupEmail: String)                        : Either[ErrorResponse, Members]  = handleGoogleErrors{
     val members = directory.members.list(groupEmail).map(gMemberToMember)
     Members(members)
   }
 
-  def createMember(groupEmail: String, member: MemberBuilder) : Member          = {
+  def createMember(groupEmail: String, member: MemberBuilder) : Either[ErrorResponse, Member]   = handleGoogleErrors{
     val created = directory.members.add(groupEmail, member.email)
     gMemberToMember(created)
   }
 
-  def deleteMember(groupEmail: String, memberEmail: String)   : Unit            = {
+  def deleteMember(groupEmail: String, memberEmail: String)   : Either[ErrorResponse, Unit]     = handleGoogleErrors{
     directory.members.remove(groupEmail, memberEmail)
   }
 

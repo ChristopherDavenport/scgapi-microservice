@@ -2,3 +2,5 @@ target/
 .idea/
 project/target/
 project/project/
+.ensime
+.ensime_cache/

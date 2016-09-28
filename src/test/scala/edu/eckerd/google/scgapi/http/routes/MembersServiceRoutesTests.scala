@@ -7,6 +7,7 @@ import edu.eckerd.google.scgapi.http.util.JsonProtocol
 import edu.eckerd.google.scgapi.models.MemberRoles.{MANAGER, MEMBER, OWNER}
 import edu.eckerd.google.scgapi.models.MemberTypes.USER
 import edu.eckerd.google.scgapi.models._
+import edu.eckerd.google.scgapi.models.ErrorResponse._
 import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
 import edu.eckerd.google.scgapi.services.core.members.MembersService
 import org.scalatest.{FlatSpec, Matchers}
@@ -24,21 +25,27 @@ class MembersServiceRoutesTests extends FlatSpec with Matchers with ScalatestRou
 
 
   class TestMemberService extends MembersService{
-    def getMember   (groupEmail: String, memberEmail: String)   : Future[Option[Member]] = memberEmail match {
-      case complete if complete == completeMember.email => Future.successful(Some(completeMember.validateEmail))
-      case mb if mb == memberBuilder.email => Future.successful(Some(memberBuilder.validateEmail))
-      case none  if none == "none" => Future.successful(None)
+    def getMember   (groupEmail: String, memberEmail: String)   : Future[Either[ErrorResponse, Member]] = Future.successful{
+      memberEmail match {
+        case complete if complete == completeMember.email => Right(completeMember.validateEmail)
+        case mb if mb == memberBuilder.email => Right(memberBuilder.validateEmail)
+        case none  if none == "none" => Left(NotFound)
+      }
     }
 
-    def getMembers  (groupEmail: String)                        : Future[Members] =
-      Future.successful(Members(List(completeMember, matchedMember, memberBuilder)))
+    def getMembers  (groupEmail: String)                        : Future[Either[ErrorResponse, Members]] =
+      Future.successful(Right(Members(List(completeMember, matchedMember, memberBuilder))))
 
-    def createMember(groupEmail: String, member: MemberBuilder) : Future[Member] = member.email match {
-      case cm if cm == completeMember.email => Future.successful(completeMember.validateEmail)
-      case mb if mb == memberBuilder.email => Future.successful(memberBuilder.validateEmail)
+    def createMember(groupEmail: String, member: MemberBuilder) : Future[Either[ErrorResponse, Member]] = Future.successful {
+      member.email match {
+        case cm if cm == completeMember.email => Right(completeMember.validateEmail)
+        case mb if mb == memberBuilder.email => Right(memberBuilder.validateEmail)
+        case notFound if notFound == "none" => Left(NotFound)
+      }
     }
 
-    def deleteMember(groupEmail: String, memberEmail: String)   : Future[Unit] = Future.successful(())
+    def deleteMember(groupEmail: String, memberEmail: String)   : Future[Either[ErrorResponse, Unit]] =
+      Future.successful(Right(()))
   }
   val authService = AuthServiceImpl("password")
   val membersService = new TestMemberService

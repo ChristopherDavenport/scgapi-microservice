@@ -3,7 +3,7 @@ package edu.eckerd.google.scgapi.http.routes
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import edu.eckerd.google.scgapi.http.util.JsonProtocol
+import edu.eckerd.google.scgapi.http.util.{ErrorResponseHandling, JsonProtocol}
 import edu.eckerd.google.scgapi.models.{GroupBuilder, Message}
 import edu.eckerd.google.scgapi.services.auth.AuthService
 import edu.eckerd.google.scgapi.services.core.groups.GroupsService
@@ -16,7 +16,7 @@ import scala.concurrent.ExecutionContext
   */
 class GroupsServiceRoutes(groupsService: GroupsService, authService: AuthService)
                          (implicit executionContext: ExecutionContext)
-  extends JsonProtocol {
+  extends JsonProtocol with ErrorResponseHandling {
 
   val route : Route = pathPrefix("groups") { authenticateBasic(realm = "*", authService.authenticate) { userName =>
     pathEndOrSingleSlash {
@@ -25,20 +25,25 @@ class GroupsServiceRoutes(groupsService: GroupsService, authService: AuthService
       } ~
         post {
           entity(as[GroupBuilder]) { groupBuilder =>
-            complete(StatusCodes.Created, groupsService.createGroup(groupBuilder.emailValidate))
+            onSuccess(groupsService.createGroup(groupBuilder.emailValidate)){
+              toRoute(_)(group => complete(StatusCodes.Created, group))
+            }
           }
         } ~
         delete {
           entity(as[GroupBuilder]) { groupBuilder =>
-            complete(groupsService.deleteGroup(groupBuilder.emailValidate)
-              .map(_ => HttpResponse(StatusCodes.NoContent)))
+            onSuccess(groupsService.createGroup(groupBuilder.emailValidate)){
+              toRoute(_){_ => complete(HttpResponse(StatusCodes.NoContent))}
+            }
           }
         }
     } ~
       pathPrefix(Segment) { emailPrefix =>
         pathEndOrSingleSlash {
           get {
-            rejectEmptyResponse(complete(groupsService.getGroupByEmail(emailPrefix)))
+            onSuccess(groupsService.getGroupByEmail(emailPrefix)){
+             toRoute(_)(group => complete(group))
+            }
           }
         }
       }

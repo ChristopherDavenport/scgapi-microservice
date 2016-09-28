@@ -1,6 +1,6 @@
 package edu.eckerd.google.scgapi.services.core.members
 
-import edu.eckerd.google.scgapi.models.{Member, MemberBuilder, Members}
+import edu.eckerd.google.scgapi.models.{ErrorResponse, Member, MemberBuilder, Members}
 
 import scala.concurrent.Future
 /**
@@ -8,9 +8,9 @@ import scala.concurrent.Future
   */
 trait MembersService {
 
-  def getMember   (groupEmail: String, memberEmail: String)   : Future[Option[Member]]
-  def getMembers  (groupEmail: String)                        : Future[Members]
-  def createMember(groupEmail: String, member: MemberBuilder) : Future[Member]
-  def deleteMember(groupEmail: String, memberEmail: String)   : Future[Unit]
+  def getMember   (groupEmail: String, memberEmail: String)   : Future[Either[ErrorResponse, Member ]]
+  def getMembers  (groupEmail: String)                        : Future[Either[ErrorResponse, Members]]
+  def createMember(groupEmail: String, member: MemberBuilder) : Future[Either[ErrorResponse, Member ]]
+  def deleteMember(groupEmail: String, memberEmail: String)   : Future[Either[ErrorResponse, Unit   ]]
 
 }

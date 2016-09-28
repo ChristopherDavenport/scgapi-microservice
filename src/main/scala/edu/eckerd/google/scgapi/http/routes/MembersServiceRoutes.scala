@@ -2,7 +2,7 @@ package edu.eckerd.google.scgapi.http.routes
 
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives._
-import edu.eckerd.google.scgapi.http.util.JsonProtocol
+import edu.eckerd.google.scgapi.http.util.{ErrorResponseHandling, JsonProtocol}
 import edu.eckerd.google.scgapi.models.MemberBuilder
 import edu.eckerd.google.scgapi.services.auth.AuthService
 import edu.eckerd.google.scgapi.services.core.members.MembersService
@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
   */
 class MembersServiceRoutes(membersService: MembersService, authService: AuthService)
                           (implicit executionContext: ExecutionContext)
-  extends JsonProtocol {
+  extends JsonProtocol with ErrorResponseHandling {
 
   val route =  authenticateBasic(realm = "*", authService.authenticate) { _ =>
     pathPrefix("groups") {
@@ -23,28 +23,37 @@ class MembersServiceRoutes(membersService: MembersService, authService: AuthServ
 
           pathEndOrSingleSlash {
             get {
-              complete(membersService.getMembers(groupEmailPrefix))
+              onSuccess(membersService.getMembers(groupEmailPrefix)){
+                toRoute(_){members => complete(members)}
+              }
             } ~
               post {
                 entity(as[MemberBuilder]){ memberBuilder =>
-                  complete(StatusCodes.Created, membersService.createMember(groupEmailPrefix, memberBuilder))
+                  onSuccess(membersService.createMember(groupEmailPrefix, memberBuilder)){
+                    toRoute(_)(member => complete(StatusCodes.Created, member))
+                  }
                 }
               } ~
               delete {
                 entity(as[MemberBuilder]){ memberBuilder =>
-                  complete(membersService.deleteMember(groupEmailPrefix, memberBuilder.email)
-                    .map{ _ => HttpResponse(StatusCodes.NoContent)})
+                  onSuccess(membersService.deleteMember(groupEmailPrefix, memberBuilder.email)){
+                    toRoute(_)(_ => complete(HttpResponse(StatusCodes.NoContent)))
+
+                  }
                 }
               }
           } ~
             pathPrefix( Segment ) { memberEmailPrefix =>
               pathEndOrSingleSlash {
                 get {
-                  rejectEmptyResponse(complete(membersService.getMember(groupEmailPrefix, memberEmailPrefix)))
+                  onSuccess(membersService.getMember(groupEmailPrefix, memberEmailPrefix)){
+                    toRoute(_){ member =>  complete(member)}
+                  }
                 } ~
                   delete {
-                    complete(membersService.deleteMember(groupEmailPrefix, memberEmailPrefix)
-                      .map{ _ => HttpResponse(StatusCodes.NoContent)})
+                    onSuccess(membersService.deleteMember(groupEmailPrefix, memberEmailPrefix)){
+                      toRoute(_){_ => complete(HttpResponse(StatusCodes.NoContent))}
+                    }
                   }
               }
             }

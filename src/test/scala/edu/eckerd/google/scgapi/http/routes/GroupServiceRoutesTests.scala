@@ -6,8 +6,10 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import edu.eckerd.google.scgapi.http.util.JsonProtocol
 import edu.eckerd.google.scgapi.models._
+import edu.eckerd.google.scgapi.models.ErrorResponse._
 import edu.eckerd.google.scgapi.services.auth.AuthServiceImpl
 import edu.eckerd.google.scgapi.services.core.groups.GroupsService
+
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.Future
@@ -52,26 +54,29 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
   val nonGroupEmailPrefix = "nonGroup"
   val nonGroupEmail = nonGroupEmailPrefix + "@eckerd.edu"
 
-  class TestError extends Throwable
-  val myTestError = new TestError
+
 
   val groupsService = new GroupsService {
-    override def getGroupByEmail(email: String): Future[Option[Group]] = email match {
-      case _ if email == completeGroupPrefix => Future(Some(completeGroup.copy(email=completeGroupEmail)))
-      case _ if email == matchedGroupPrefix => Future(Some(matchedGroup.copy(email = matchedGroupEmail)))
-      case _ if email == nonGroupEmailPrefix => Future(None)
-    }
-    //  def updateGroup(groupBuilder: GroupBuilder) : Future[Group]
-    override def deleteGroup(groupBuilder: GroupBuilder): Future[Unit] = groupBuilder.email match {
-      case fail if fail == nonGroupEmail => Future.failed(myTestError)
-      case _ => Future.successful(())
+
+    override def getGroupByEmail(email: String): Future[Either[ErrorResponse, Group]] = Future.successful {
+      email match {
+        case _ if email == completeGroupPrefix => Right(completeGroup.copy(email = completeGroupEmail))
+        case _ if email == matchedGroupPrefix => Right(matchedGroup.copy(email = matchedGroupEmail))
+        case _ if email == nonGroupEmailPrefix => Left(NotFound)
+      }
     }
 
-    override def createGroup(groupBuilder: GroupBuilder): Future[Option[Group]] = groupBuilder.email match {
-      case fail if fail == nonGroupEmail => Future.failed(myTestError)
-      case complete if complete == completeGroupEmail => Future.successful(Some(completeGroup))
-      case _ => Future.successful(Some(groupBuilder))
+    //  def updateGroup(groupBuilder: GroupBuilder) : Future[Group]
+    override def deleteGroup(groupBuilder: GroupBuilder): Future[Either[ErrorResponse,Unit]] =
+      Future.successful{ Right(()) }
+
+    override def createGroup(groupBuilder: GroupBuilder): Future[Either[ErrorResponse, Group]] = Future.successful{
+      groupBuilder.email match {
+        case complete if complete == completeGroupEmail => Right(completeGroup)
+        case other => Right(groupBuilder)
+      }
     }
+
   }
 
   val groupsServiceRoutes = GroupsServiceRoutes(groupsService, authService)
@@ -79,8 +84,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
   "route /group - GET" should "handle an authenticated request" in {
     val user = "Chris Davenport"
     val validCredentials = BasicHttpCredentials(user, "password")
-    Get(s"/groups/") ~> addCredentials(validCredentials) ~>
-      Route.seal(groupsServiceRoutes.route) ~> check {
+    Get(s"/groups/") ~> addCredentials(validCredentials) ~> groupsServiceRoutes.route ~> check {
       responseAs[Message] shouldEqual Message(s"$user Please Ask For a Get Request Against A Single Group")
     }
   }
@@ -88,8 +92,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
   "route /group - POST" should "indicate if it successfully created the resource" in {
     val gb = groupBuilder
     val validCredentials = BasicHttpCredentials("Chris Davenport", "password")
-    Post(s"/groups/", gb) ~> addCredentials(validCredentials) ~>
-      Route.seal(groupsServiceRoutes.route) ~> check {
+    Post(s"/groups/", gb) ~> addCredentials(validCredentials) ~> groupsServiceRoutes.route ~> check {
       status === StatusCodes.Created
       responseAs[Group] shouldEqual gb
     }
@@ -99,8 +102,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     val cg = completeGroup
     val gb = cg.asGroupBuilder
     val validCredentials = BasicHttpCredentials("Chris Davenport", "password")
-    Post(s"/groups/", gb) ~> addCredentials(validCredentials) ~>
-      Route.seal(groupsServiceRoutes.route) ~> check {
+    Post(s"/groups/", gb) ~> addCredentials(validCredentials) ~> groupsServiceRoutes.route ~> check {
       status === StatusCodes.Created
       responseAs[Group] shouldEqual cg
     }
@@ -110,8 +112,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
   "route /group - DELETE" should "return No Content After a Delete" in {
     val gb = GroupBuilder("email", "name", Some("desc"))
     val validCredentials = BasicHttpCredentials("Chris Davenport", "password")
-    Delete(s"/groups/", gb) ~> addCredentials(validCredentials) ~>
-      Route.seal(groupsServiceRoutes.route) ~> check {
+    Delete(s"/groups/", gb) ~> addCredentials(validCredentials) ~> groupsServiceRoutes.route ~> check {
         status === StatusCodes.NoContent
     }
   }
@@ -120,8 +121,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
   "route /group/:emailPrefix - GET" should "handle authenticated requests for an extant completeGroup" in {
     val user = "Chris Davenport"
     val validCredentials = BasicHttpCredentials(user, "password")
-    Get(s"/groups/$completeGroupPrefix") ~> addCredentials(validCredentials) ~>
-      Route.seal(groupsServiceRoutes.route) ~> check {
+    Get(s"/groups/$completeGroupPrefix") ~> addCredentials(validCredentials) ~> groupsServiceRoutes.route ~> check {
       responseAs[Group] shouldEqual completeGroup
     }
   }
@@ -139,8 +139,7 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
   it should "handle authenticated requests an extant matchedGroup" in {
     val user = "Chris Davenport"
     val validCredentials = BasicHttpCredentials(user, "password")
-    Get(s"/groups/$matchedGroupPrefix") ~> addCredentials(validCredentials) ~>
-      Route.seal(groupsServiceRoutes.route) ~> check {
+    Get(s"/groups/$matchedGroupPrefix") ~> addCredentials(validCredentials) ~> groupsServiceRoutes.route ~> check {
       responseAs[Group] shouldEqual matchedGroup
     }
   }
@@ -149,9 +148,9 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     val user = "Chris Davenport"
     val validCredentials = BasicHttpCredentials(user, "password")
     Get(s"/groups/$nonGroupEmailPrefix") ~> addCredentials(validCredentials) ~>
-      Route.seal(groupsServiceRoutes.route) ~> check {
+      groupsServiceRoutes.route ~> check {
       status === StatusCodes.NotFound
-      responseAs[String] shouldEqual "The requested resource could not be found."
+      responseAs[ErrorEntry] shouldEqual NotFound.errorEntry
     }
   }
 
@@ -161,8 +160,6 @@ class GroupServiceRoutesTests extends FlatSpec with Matchers with ScalatestRoute
     Get(s"/groups/something/perfect") ~> addCredentials(validCredentials) ~>
       groupsServiceRoutes.route ~> check {
       handled shouldBe false
-//      status === StatusCodes.NotFound
-//      responseAs[String] shouldEqual "The requested resource could not be found."
     }
   }
 

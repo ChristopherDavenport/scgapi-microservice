@@ -1,6 +1,6 @@
 package edu.eckerd.google.scgapi.services.core.groups
 
-import edu.eckerd.google.scgapi.models.{Group, GroupBuilder}
+import edu.eckerd.google.scgapi.models.{ErrorResponse, Group, GroupBuilder}
 import edu.eckerd.google.scgapi.persistence.google.DirectoryService
 import edu.eckerd.google.scgapi.persistence.google.core.groups.GroupsDirectoryService
 import edu.eckerd.google.scgapi.services.core.CoreFunctions
@@ -12,15 +12,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class GroupsServiceBasicImpl(groupsDirectoryService: GroupsDirectoryService)
                             (implicit executionContext: ExecutionContext) extends GroupsService with CoreFunctions{
 
-  def getGroupByEmail(email: String)          : Future[Option[Group]] = Future{
+  def getGroupByEmail(email: String)          : Future[Either[ErrorResponse, Group]] = Future{
     groupsDirectoryService.getGroup( emailParse(email) )
   }
 
-  def createGroup(groupBuilder: GroupBuilder) : Future[Option[Group]] = Future{
+  def createGroup(groupBuilder: GroupBuilder) : Future[Either[ErrorResponse, Group]] = Future{
     groupsDirectoryService.createGroup(groupBuilder)
   }
 
-  def deleteGroup(groupBuilder: GroupBuilder) : Future[Unit]  = Future{
+  def deleteGroup(groupBuilder: GroupBuilder) : Future[Either[ErrorResponse, Unit]]  = Future{
     groupsDirectoryService.deleteGroup(groupBuilder)
   }
 
